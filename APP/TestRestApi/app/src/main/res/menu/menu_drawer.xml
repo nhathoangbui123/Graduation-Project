@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/monitor_navdrawer"
+            android:icon="@drawable/ic_baseline_desktop_windows_24"
+            android:title="Monitor" />
+        <item
+            android:id="@+id/devices_navdrawer"
+            android:icon="@drawable/ic_baseline_power_24"
+            android:title="Devices" />
+        <item
+            android:id="@+id/settings_navdrawer"
+            android:icon="@drawable/ic_settings"
+            android:title="Settings" />
+        <item
+            android:icon="@drawable/ic_help"
+            android:title="Help"
+            android:id="@+id/help_navdrawer"/>
+    </group>
+    <item android:title="User">
+        <menu>
+            <item
+                android:id="@+id/profile_navdrawer"
+                android:icon="@drawable/ic_baseline_person_24"
+                android:title="Profile" />
+            <item
+                android:id="@+id/logout_navdrawer"
+                android:icon="@drawable/ic_baseline_arrow_back_24"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu>
