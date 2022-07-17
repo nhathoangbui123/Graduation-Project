@@ -143,7 +143,7 @@ void aws_iot_task(void *arg){
             continue;
         }
         ESP_LOGI(TAG, "Stack remaining for task '%s' is %d bytes", pcTaskGetTaskName(NULL), uxTaskGetStackHighWaterMark(NULL));
-    
+        ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
         cJSON *pub;
         char *data_json;
         int length_data_json;
@@ -160,6 +160,16 @@ void aws_iot_task(void *arg){
         cJSON_AddNumberToObject(pub, "I2",param.I2);
         cJSON_AddNumberToObject(pub, "I3",param.I3);
         cJSON_AddNumberToObject(pub, "I4",param.I4);
+
+        cJSON_AddNumberToObject(pub, "E1",param.E1);
+        cJSON_AddNumberToObject(pub, "E2",param.E2);
+        cJSON_AddNumberToObject(pub, "E3",param.E3);
+        cJSON_AddNumberToObject(pub, "E4",param.E4);
+
+        cJSON_AddNumberToObject(pub, "P1",param.P1);
+        cJSON_AddNumberToObject(pub, "P2",param.P2);
+        cJSON_AddNumberToObject(pub, "P3",param.P3);
+        cJSON_AddNumberToObject(pub, "P4",param.P4);
 
         cJSON_AddNumberToObject(pub, "T1",param.T1);
         cJSON_AddNumberToObject(pub, "T2",param.T2);

@@ -2,12 +2,11 @@ set(COMPONENT_SRCS
 	"NVSDriver.c"
 	"wifi.c"
 	"aws.c"
-	"pzem.c"
-	"adc_dev.c"
+	"pzem.cpp"
 	"nextion.c"
 	"ws2812_driver.c"
 	"cmd.c"
-	"app_main.c"
+	"app_main.cpp"
 	)
 
 set(COMPONENT_ADD_INCLUDEDIRS

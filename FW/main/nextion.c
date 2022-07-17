@@ -31,7 +31,7 @@ void tx_task(void* arg)
   ESP_LOGI(TX_TASK_TAG,"NEXTION TX TASK");
   char *cmd = (char*)malloc(TX_BUFFER);
   while (1) {
-
+    ESP_LOGI(TX_TASK_TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     sprintf(cmd, "Monitor.power_v.txt=\"%0.3fKWh\"\xFF\xFF\xFF",param.energy);
     ESP_LOGI(TX_TASK_TAG, "Monitor.power_v.txt=%0.3fKWh", param.energy);
     sendData(TX_TASK_TAG, cmd);	
@@ -220,6 +220,7 @@ void rx_task(void* arg)
   uint8_t* data = (uint8_t*) malloc(RX_BUFFER+1);
   char *dstream = malloc(RX_BUFFER+1);
   while (1) {
+    ESP_LOGI(RX_TASK_TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     memset(dstream,0,sizeof(malloc(RX_BUFFER+1)));
     const int rxBytes = uart_read_bytes(nUART, data, RX_BUFFER, 500 / portTICK_RATE_MS);
     if (rxBytes > 0) {

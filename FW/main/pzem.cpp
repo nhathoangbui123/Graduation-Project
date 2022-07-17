@@ -4,7 +4,6 @@
 #include "driver/uart.h"
 #include "driver/gpio.h"
 #include <inttypes.h>
-#include "config.h"
 
 #define REG_VOLTAGE     0x0000
 #define REG_CURRENT_L   0x0001
@@ -32,134 +31,116 @@
 #define RESPONSE_SIZE 32
 #define READ_TIMEOUT 100
 
-#define PZEM_BAUD_RATE 9600
+#define INVALID_ADDRESS 0x00
 
-#define DEBUG
-
-uart_data_t * _uart_data;
-power_meansuare_t _currentValues;
-
-uint8_t _addr;   // Device address
-uint64_t _lastRead; // Last time values were updated
-
-void printBuf(uint8_t* buffer, uint16_t len){
-    for(uint16_t i = 0; i < len; i++){
-        char temp[6];
-        sprintf(temp, "%#.2x ", buffer[i]);
-        printf(temp);
-    }
-    printf("\n");
-}
-
-void PZEM004Tv30_Init(uart_data_t *uart_data, uint8_t addr)
+pzem::pzem(uint8_t addr)
 {
-	_uart_data = uart_data;
-
-	uart_config_t uart_config = {
-	        .baud_rate = PZEM_BAUD_RATE,
-	        .data_bits = UART_DATA_8_BITS,
-	        .parity = UART_PARITY_DISABLE,
-	        .stop_bits = UART_STOP_BITS_1,
-	        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    //UART_HW_FLOWCTRL_CTS_RTS,
-	        .rx_flow_ctrl_thresh = 122,
-	};
-	ESP_ERROR_CHECK(uart_driver_install(_uart_data->uart_port, RX_BUF_SIZE * 2, 0, 0, NULL, 0));
-	ESP_ERROR_CHECK(uart_param_config(_uart_data->uart_port, &uart_config));
-	ESP_ERROR_CHECK(uart_set_pin(_uart_data->uart_port, uart_data->tx_io_num, uart_data->rx_io_num, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+	// uart_config_t uart_config = {
+	//         .baud_rate = PZEM_BAUD_RATE,
+	//         .data_bits = UART_DATA_8_BITS,
+	//         .parity = UART_PARITY_DISABLE,
+	//         .stop_bits = UART_STOP_BITS_1,
+	//         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,    //UART_HW_FLOWCTRL_CTS_RTS,
+	//         .rx_flow_ctrl_thresh = 122,
+	// };
+	// ESP_ERROR_CHECK(uart_driver_install(_uart_data->uart_port, RX_BUF_SIZE * 2, 0, 0, NULL, 0));
+	// ESP_ERROR_CHECK(uart_param_config(_uart_data->uart_port, &uart_config));
+	// ESP_ERROR_CHECK(uart_set_pin(_uart_data->uart_port, uart_data->tx_io_num, uart_data->rx_io_num, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 	init(addr);
 }
+pzem::~pzem(){
 
-power_meansuare_t * meansures()
-{
-   if(!updateValues()) // Update vales if necessary
-		return NULL; // Update did not work, return NAN
-	return &_currentValues;
 }
-
-float voltage()
+/*!
+ * pzem::voltage
+ *
+ * Get line voltage in Volts
+ *
+ * @return current L-N volage
+*/
+float pzem::voltage()
 {
     if(!updateValues()) // Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.voltage;
 }
 
 /*!
- * PZEM004Tv30::current
+ * pzem::current
  *
  * Get line in Amps
  *
  * @return line current
 */
-float current()
+float pzem::current()
 {
     if(!updateValues())// Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.current;
 }
 
 /*!
- * PZEM004Tv30::power
+ * pzem::power
  *
  * Get Active power in W
  *
  * @return active power in W
 */
-float power()
+float pzem::power()
 {
     if(!updateValues()) // Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.power;
 }
 
 /*!
- * PZEM004Tv30::energy
+ * pzem::energy
  *
  * Get Active energy in kWh since last reset
  *
  * @return active energy in kWh
 */
-float energy()
+float pzem::energy()
 {
     if(!updateValues()) // Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.energy;
 }
 
 /*!
- * PZEM004Tv30::frequeny
+ * pzem::frequency
  *
  * Get current line frequency in Hz
  *
  * @return line frequency in Hz
 */
-float frequency()
+float pzem::frequency()
 {
     if(!updateValues()) // Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.frequency;
 }
 
 /*!
- * PZEM004Tv30::pf
+ * pzem::pf
  *
  * Get power factor of load
  *
  * @return load power factor
 */
-float pf()
+float pzem::pf()
 {
     if(!updateValues()) // Update vales if necessary
-        return NAN; // Update did not work, return NAN
+        return 0.0; // Update did not work, return NAN
 
     return _currentValues.pf;
 }
-
-bool sendCmd8(uint8_t cmd, uint16_t rAddr, uint16_t val, bool check, uint16_t slave_addr){
+bool pzem::sendCmd8(uint8_t cmd, uint16_t rAddr, uint16_t val, bool check, uint16_t slave_addr){
     uint8_t sendBuffer[8]; // Send buffer
     uint8_t respBuffer[8]; // Response buffer (only used when check is true)
 
@@ -180,9 +161,9 @@ bool sendCmd8(uint8_t cmd, uint16_t rAddr, uint16_t val, bool check, uint16_t sl
 
     setCRC(sendBuffer, 8);                   // Set CRC of frame
 
-	uart_write_bytes(_uart_data->uart_port, (const char*)sendBuffer, 8);
+	uart_write_bytes(UART_NUM_1, (const char*)sendBuffer, 8);
     if(check) {
-    	if(!recieve(respBuffer, 8)){ // if check enabled, read the response
+    	if(!receive(respBuffer, 8)){ // if check enabled, read the response
             return false;
         }
 
@@ -194,10 +175,33 @@ bool sendCmd8(uint8_t cmd, uint16_t rAddr, uint16_t val, bool check, uint16_t sl
     }
     return true;
 }
+/*!
+ * pzem::resetEnergy
+ *
+ * Reset the Energy counter on the device
+ *
+ * @return success
+*/
+bool pzem::resetEnergy(){
+    uint8_t buffer[] = {0x00, CMD_REST, 0x00, 0x00};
+    uint8_t reply[5];
+    buffer[0] = _addr;
 
+    setCRC(buffer, 4);
+    
+    uart_write_bytes(UART_NUM_1, (const char*)buffer , 4);
+
+    uint16_t length = receive(reply, 5);
+
+    if(length == 0 || length == 5){
+        return false;
+    }
+
+    return true;
+}
 
 /*!
- * PZEM004Tv30::setAddress
+ * pzem::setAddress
  *
  * Set a new device address and update the device
  * WARNING - should be used to set up devices once.
@@ -207,13 +211,13 @@ bool sendCmd8(uint8_t cmd, uint16_t rAddr, uint16_t val, bool check, uint16_t sl
  *
  * @return success
 */
-bool setAddress(uint8_t addr)
+bool pzem::setAddress(uint8_t addr)
 {
     if(addr < 0x01 || addr > 0xF7) // sanity check
         return false;
 
     // Write the new address to the address register
-    if(!sendCmd8(CMD_WSR, WREG_ADDR, addr, true,0xFFFF))
+    if(!sendCmd8(CMD_WSR, WREG_ADDR, addr, true))
         return false;
 
     _addr = addr; // If successful, update the current slave address
@@ -221,20 +225,50 @@ bool setAddress(uint8_t addr)
     return true;
 }
 
+/*! 
+ * pzem::readAddress
+ * 
+ * Read address from the device memory
+ * @return success
+*/
+uint8_t pzem::readAddress(bool update)
+{
+    static uint8_t response[7];
+    uint8_t addr = 0;
+    // Read 1 register
+    if (!sendCmd8(CMD_RHR, WREG_ADDR, 0x01, false))
+        return INVALID_ADDRESS;
+
+
+    if(receive(response, 7) != 7){ // Something went wrong
+        return INVALID_ADDRESS;
+    }
+
+    // Get the current address
+    addr = ((uint32_t)response[3] << 8 | // Raw address
+                              (uint32_t)response[4]);
+
+    // Update the internal address if desired
+    if(update){
+        _addr = addr;
+    }
+    return addr;
+}
+
 /*!
- * PZEM004Tv30::getAddress
+ * pzem::getAddress
  *
  * Get the current device address
  *
  * @return address
 */
-uint8_t getAddress()
+uint8_t pzem::getAddress()
 {
     return _addr;
 }
 
 /*!
- * PZEM004Tv30::setPowerAlarm
+ * pzem::setPowerAlarm
  *
  * Set power alarm threshold in watts
  *
@@ -242,28 +276,28 @@ uint8_t getAddress()
  *
  * @return success
 */
-bool setPowerAlarm(uint16_t watts)
+bool pzem::setPowerAlarm(uint16_t watts)
 {
     if (watts > 25000){ // Sanitych check
         watts = 25000;
     }
 
     // Write the watts threshold to the Alarm register
-    if(!sendCmd8(CMD_WSR, WREG_ALARM_THR, watts, true,0xFFFF))
+    if(!sendCmd8(CMD_WSR, WREG_ALARM_THR, watts, true))
         return false;
 
     return true;
 }
 
 /*!
- * PZEM004Tv30::getPowerAlarm
+ * pzem::getPowerAlarm
  *
  * Is the power alarm set
  *
  *
  * @return arlam triggerd
 */
-bool getPowerAlarm()
+bool pzem::getPowerAlarm()
 {
     if(!updateValues()) // Update vales if necessary
         return NAN; // Update did not work, return NAN
@@ -272,7 +306,7 @@ bool getPowerAlarm()
 }
 
 /*!
- * PZEM004Tv30::init
+ * pzem::init
  *
  * initialization common to all consturctors
  *
@@ -280,7 +314,7 @@ bool getPowerAlarm()
  *
  * @return success
 */
-void init(uint8_t addr){
+void pzem::init(uint8_t addr){
     if(addr < 0x01 || addr > 0xF8) // Sanity check of address
         addr = PZEM_DEFAULT_ADDR;
     _addr = addr;
@@ -290,23 +324,14 @@ void init(uint8_t addr){
     _lastRead -= UPDATE_TIME;
 
 }
-
-
-// #ifdef CONFIG_IDF_TARGET_ESP32
-uint64_t millis()
-{
-	return (uint64_t)(esp_timer_get_time()/1000);
-}
-// #endif
-
 /*!
- * PZEM004Tv30::updateValues
+ * pzem::updateValues
  *
  * Read all registers of device and update the local values
  *
  * @return success
 */
-bool updateValues()
+bool pzem::updateValues()
 {
     //static uint8_t buffer[] = {0x00, CMD_RIR, 0x00, 0x00, 0x00, 0x0A, 0x00, 0x00};
     static uint8_t response[25];
@@ -319,7 +344,7 @@ bool updateValues()
     // Read 10 registers starting at 0x00 (no check)
     sendCmd8(CMD_RIR, 0x00, 0x0A, false,0xFFFF);
 
-    if(recieve(response, 25) != 25){ // Something went wrong
+    if(receive(response, 25) != 25){ // Something went wrong
         return false;
     }
     // Update the current values
@@ -353,43 +378,14 @@ bool updateValues()
     // Record current time as _lastRead
     _lastRead = millis();
 
-
     return true;
 }
-
-
-/*!
- * PZEM004Tv30::resetEnergy
- *
- * Reset the Energy counter on the device
- *
- * @return success
-*/
-bool resetEnergy(){
-    uint8_t buffer[] = {0x00, CMD_REST, 0x00, 0x00};
-    uint8_t reply[5];
-    buffer[0] = _addr;
-
-    setCRC(buffer, 4);
-// #ifdef CONFIG_IDF_TARGET_ESP32
-    uart_write_bytes(_uart_data->uart_port, (const char*)buffer , 4);
-// #else
-//     _serial->write(buffer, 4);
-// #endif
-
-    uint16_t length = recieve(reply, 5);
-
-    if(length == 0 || length == 5){
-        return false;
-    }
-
-    return true;
+uint64_t pzem::millis()
+{
+	return (uint64_t)(esp_timer_get_time()/1000);
 }
-
-
-
 /*!
- * PZEM004Tv30::recieve
+ * pzem::recieve
  *
  * Receive data from serial with buffer limit and timeout
  *
@@ -398,19 +394,20 @@ bool resetEnergy(){
  *
  * @return number of bytes read
 */
-uint16_t recieve(uint8_t *resp, uint16_t len)
+uint16_t pzem::receive(uint8_t *resp, uint16_t len)
 {
     unsigned long startTime = millis(); // Start time for Timeout
     uint8_t index = 0; // Bytes we have read
     while((index < len) && (millis() - startTime < READ_TIMEOUT))
     {
     	uint8_t* c = (uint8_t*) malloc(1);
-    	int length = uart_read_bytes(_uart_data->uart_port, c, 1, READ_TIMEOUT / portTICK_RATE_MS);
+    	int length = uart_read_bytes(UART_NUM_1, c, 1, READ_TIMEOUT / portTICK_RATE_MS);
 
 		if (length > 0)
 		{
 			resp[index++] = *c;
 		}
+        free(c);
 		taskYIELD();	// do background netw tasks while blocked for IO (prevents ESP watchdog trigger)
     }
 
@@ -418,12 +415,12 @@ uint16_t recieve(uint8_t *resp, uint16_t len)
     if(!checkCRC(resp, index)){
     	return 0;
     }
-
+    
     return index;
 }
 
 /*!
- * PZEM004Tv30::checkCRC
+ * pzem::checkCRC
  *
  * Performs CRC check of the buffer up to len-2 and compares check sum to last two bytes
  *
@@ -432,7 +429,7 @@ uint16_t recieve(uint8_t *resp, uint16_t len)
  *
  * @return is the buffer check sum valid
 */
-bool checkCRC(const uint8_t *buf, uint16_t len){
+bool pzem::checkCRC(const uint8_t *buf, uint16_t len){
     if(len <= 2) // Sanity check
         return false;
 
@@ -442,7 +439,7 @@ bool checkCRC(const uint8_t *buf, uint16_t len){
 
 
 /*!
- * PZEM004Tv30::setCRC
+ * pzem::setCRC
  *
  * Set last two bytes of buffer to CRC16 of the buffer up to byte len-2
  * Buffer must be able to hold at least 3 bytes
@@ -451,7 +448,7 @@ bool checkCRC(const uint8_t *buf, uint16_t len){
  * @param[in] len  Length of the respBuffer including 2 bytes for CRC
  *
 */
-void setCRC(uint8_t *buf, uint16_t len){
+void pzem::setCRC(uint8_t *buf, uint16_t len){
     if(len <= 2) // Sanity check
         return;
 
@@ -501,7 +498,7 @@ static const uint16_t crcTable[] DRAM_ATTR = {
 
 
 /*!
- * PZEM004Tv30::CRC16
+ * pzem::CRC16
  *
  * Calculate the CRC16-Modbus for a buffer
  * Based on https://www.modbustools.com/modbus_crc16.html
@@ -511,7 +508,7 @@ static const uint16_t crcTable[] DRAM_ATTR = {
  *
  * @return Calculated CRC
 */
-uint16_t CRC16(const uint8_t *data, uint16_t len)
+uint16_t pzem::CRC16(const uint8_t *data, uint16_t len)
 {
     uint8_t nTemp; // CRC table index
     uint16_t crc = 0xFFFF; // Default value
@@ -526,84 +523,69 @@ uint16_t CRC16(const uint8_t *data, uint16_t len)
 }
 
 /*!
- * PZEM004Tv30::search
+ * pzem::search
  *
  * Search for available devices. This should be used only for debugging!
  * Prints any found device addresses on the bus.
  * Can be disabled by defining PZEM004T_DISABLE_SEARCH
 */
-// void search(){
-// #if ( not defined(PZEM004T_DISABLE_SEARCH))
-//     static uint8_t response[7];
-//     for(uint16_t addr = 0x01; addr <= 0xF8; addr++){
-//         sendCmd8(CMD_RIR, 0x00, 0x01, false, addr);
+void pzem::search(){
+    static uint8_t response[7];
+    for(uint16_t addr = 0x01; addr <= 0xF8; addr++){
+        sendCmd8(CMD_RIR, 0x00, 0x01, false, addr);
 
-//         if(recieve(response, 7) != 7){ // Something went wrong
-//             continue;
-//         } else {
-//         }
-//     }
-// #endif
-// }
-void pzem_task(void *arg){
-    uart_data_t uart_data= {
-        .uart_port = UART_NUM_1,
-        .tx_io_num = TX_PZEM,
-        .rx_io_num = RX_PZEM,
-    };
-    PZEM004Tv30_Init(&uart_data,PZEM_DEFAULT_ADDR);
-    bool pzem004_ajustado = false;
-	const uint8_t addr = 0x42;
-
-    while (1) {
-    	if (!pzem004_ajustado)
-    	{
-    		ESP_LOGI("TAG_PZEM004T", "Set address to 0x42");
-    		setAddress(addr);
-    		if (addr == getAddress())
-    		{
-				ESP_LOGI("TAG_PZEM004T", "New Address %#.2x", getAddress());
-				ESP_LOGI("TAG_PZEM004T", "Reset Energy");
-				//resetEnergy();
-				pzem004_ajustado = true;
-    		}
-    		else
-    		{
-    			ESP_LOGI("TAG_PZEM004T", "Error to set New Address");
-    			vTaskDelay( 5000 / portTICK_PERIOD_MS);
-    		}
-    	}
-
-    	//Ensure that mqtt is connected
-		if(pzem004_ajustado) {
-			power_meansuare_t * mensures = meansures();
-            if(mensures){
-                ESP_LOGI("TAG_PZEM004T","voltage %f",mensures->voltage);
-                ESP_LOGI("TAG_PZEM004T","current %f",mensures->current);
-                ESP_LOGI("TAG_PZEM004T","power %f",mensures->power);
-                ESP_LOGI("TAG_PZEM004T","energy %f",mensures->energy);
-                ESP_LOGI("TAG_PZEM004T","frequency %f",mensures->frequency);
-                ESP_LOGI("TAG_PZEM004T","pf %f",mensures->pf);
-            
-                param.voltage=mensures->voltage;
-                //param.current=mensures->current;
-                param.current=param.I1+param.I2+param.I3+param.I4;
-
-                param.power=mensures->power;
-                param.energy=mensures->energy;
-                
-                param.cost=param.energy*param.EP;
-
-                param.frequency=mensures->frequency;
-                param.pf=mensures->pf;
-            }
-			vTaskDelay( 5000 / portTICK_PERIOD_MS );
-		}
-		else
-		{
-			taskYIELD();
-		}
-        
-	}
+        if(receive(response, 7) != 7){ // Something went wrong
+            continue;
+        } else {
+        }
+    }
 }
+// void pzem::pzem_task(void *arg){
+//     uart_data_t uart_data= {
+//         .uart_port = UART_NUM_1,
+//         .tx_io_num = TX_PZEM,
+//         .rx_io_num = RX_PZEM,
+//     };
+//     //PZEM004Tv30_Init(&uart_data,PZEM_DEFAULT_ADDR);
+//     pzem pzem(&uart_data,PZEM_DEFAULT_ADDR);
 
+//     bool pzem004_ajustado = false;
+// 	const uint8_t addr = 0x42;
+
+//     while (1) {
+//     	if (!pzem004_ajustado)
+//     	{
+//     		ESP_LOGI("TAG_PZEM004T", "Set address to 0x42");
+//     		pzem.setAddress(addr);
+//     		if (addr == pzem.getAddress())
+//     		{
+// 				ESP_LOGI("TAG_PZEM004T", "New Address %#.2x", pzem.getAddress());
+// 				ESP_LOGI("TAG_PZEM004T", "Reset Energy");
+// 				//resetEnergy();
+// 				pzem004_ajustado = true;
+//     		}
+//     		else
+//     		{
+//     			ESP_LOGI("TAG_PZEM004T", "Error to set New Address");
+//     			vTaskDelay( 5000 / portTICK_PERIOD_MS);
+//     		}
+//     	}
+
+// 		if(pzem004_ajustado) {
+
+//             ESP_LOGI("TAG_PZEM004T","voltage %f",pzem.voltage());
+//             ESP_LOGI("TAG_PZEM004T","current %f",pzem.current());
+//             ESP_LOGI("TAG_PZEM004T","power %f",pzem.power());
+//             ESP_LOGI("TAG_PZEM004T","energy %f",pzem.energy());
+//             ESP_LOGI("TAG_PZEM004T","frequency %f",pzem.frequency());
+//             ESP_LOGI("TAG_PZEM004T","pf %f",pzem.pf());
+            
+// 			vTaskDelay( 5000 / portTICK_PERIOD_MS );
+// 		}
+// 		else
+// 		{
+// 			taskYIELD();
+// 		}
+        
+// 	}
+// }
