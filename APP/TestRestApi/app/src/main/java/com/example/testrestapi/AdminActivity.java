@@ -13,11 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.amplifyframework.api.rest.RestOptions;
 import com.amplifyframework.core.Amplify;
 import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +34,8 @@ public class AdminActivity extends AppCompatActivity {
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
+    private String username1, username2;
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,20 +53,49 @@ public class AdminActivity extends AppCompatActivity {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.rcview);
-        List<InfoCardview> device = createList();
+        //List<InfoCardview> device = createList();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,1);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        cardviewAdapter = new CardviewAdapter(AdminActivity.this,device,AdminActivity.this);
-        recyclerView.setAdapter(cardviewAdapter);
+//        cardviewAdapter = new CardviewAdapter(AdminActivity.this,device,AdminActivity.this);
+//        recyclerView.setAdapter(cardviewAdapter);
+        mHandler.post(runnable);
+    }
+    private final Runnable runnable =
+            new Runnable() {
+                public void run() {
+                    get_user();
+                    List<InfoCardview> device = createList();
+                    cardviewAdapter = new CardviewAdapter(AdminActivity.this,device,AdminActivity.this);
+                    recyclerView.setAdapter(cardviewAdapter);
+                    mHandler.postDelayed(this, 1000);
+                }
+            };
+    private void get_user() {
+        RestOptions options = RestOptions.builder()
+                .addPath("/todo/user")
+                .build();
+        Amplify.API.get(options,
+                restResponse -> {
+                    try {
+                        //get info
+                        Log.i(TAG, "GET succeeded: " + restResponse.getData().asJSONObject().getJSONArray("users").getJSONObject(1).getString("Username"));
+                        username1=restResponse.getData().asJSONObject().getJSONArray("users").getJSONObject(1).getString("Username");
+                        username2=restResponse.getData().asJSONObject().getJSONArray("users").getJSONObject(2).getString("Username");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                apiFailure -> Log.e(TAG, "GET failed.", apiFailure)
+        );
     }
     private List<InfoCardview> createList() {
         List<InfoCardview> list = new ArrayList<InfoCardview>();
-        InfoCardview User1 = new InfoCardview("User 1","user",3);
-        InfoCardview User2 = new InfoCardview("User 2","user",3);
+        InfoCardview User1 = new InfoCardview("User "+username1,"user",3);
+        InfoCardview User2 = new InfoCardview("User "+username2,"user",3);
 
         list.add(User1);
         list.add(User2);

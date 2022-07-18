@@ -30,27 +30,32 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ProgressDialog processDialog;
+    private String username;
+    private String Uname;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Uname = getIntent().getStringExtra("username");
+        Log.i(TAG, Uname);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
 
         BottomNavigationView navigation = findViewById(R.id.nav);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
+        username = Amplify.Auth.getCurrentUser().getUsername();
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        if(!username.equals("admin"))
+        {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        }
 
         processDialog = new ProgressDialog(this);
 
         setupDrawerContent(nvDrawer);
         getSupportActionBar().setTitle("Monitor");
-        String username = Amplify.Auth.getCurrentUser().getUsername();
         getSupportActionBar().setSubtitle("Hello "+username);
         loadFragment(new MonitorFragment());
     }
@@ -58,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawer.openDrawer(GravityCompat.START);
+                if(!username.equals("admin"))
+                {
+                    mDrawer.openDrawer(GravityCompat.START);
+                }else{
+                    startActivity(new Intent(MainActivity.this, AdminActivity.class));
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -84,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.devices_navdrawer:
                 fragment = new DevicesFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("username", Uname);
+                fragment.setArguments(bundle);
                 getSupportActionBar().setTitle("Devices");
                 loadFragment(fragment);
                 break;
@@ -161,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.device_nav:
                     fragment = new DevicesFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("username", Uname);
+                    fragment.setArguments(bundle);
                     getSupportActionBar().setTitle("Devices");
                     loadFragment(fragment);
                     return true;

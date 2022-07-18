@@ -115,14 +115,20 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(position==0){
-                        device1();
-                    }else if(position==1){
-                        device2();
-                    }else if(position==2){
-                        device3();
-                    }else{
-                        device4();
+                    String username = Amplify.Auth.getCurrentUser().getUsername();
+
+                    if(username.equals("hoang")) {
+                        if(position==0){
+                            device1();
+                        }else{
+                            device2();
+                        }
+                    }else if(username.equals("do")){
+                        if(position==0){
+                            device3();
+                        }else{
+                            device4();
+                        }
                     }
                 }
             });
@@ -139,32 +145,63 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
             holder.sw1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    String enpoint = "Sdev" +String.valueOf( position + 1);
-                    if(isChecked){
-                        String data = "{\"command\":\"D"+String.valueOf( position + 1)+"ON\"}";
-                        RestOptions options = RestOptions.builder()
-                                .addPath("/todo/"+enpoint)
-                                .addBody(data.getBytes())
-                                .build();
+                    String username = Amplify.Auth.getCurrentUser().getUsername();
+                    if(username.equals("hoang")) {
+                        String enpoint = "Sdev" +String.valueOf( position + 1);
+                        if(isChecked){
+                            String data = "{\"command\":\"D"+String.valueOf( position + 1)+"ON\"}";
+                            RestOptions options = RestOptions.builder()
+                                    .addPath("/todo/"+enpoint)
+                                    .addBody(data.getBytes())
+                                    .build();
 
-                        Amplify.API.post(options,
-                                response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                error -> Log.e(TAG, "POST failed.", error)
-                        );
-                        Toast.makeText(context,device.name+" ON",Toast.LENGTH_SHORT).show();
-                    }else{
-                        String data = "{\"command\":\"D"+String.valueOf( position + 1)+"OFF\"}";
-                        RestOptions options = RestOptions.builder()
-                                .addPath("/todo/"+enpoint)
-                                .addBody(data.getBytes())
-                                .build();
+                            Amplify.API.post(options,
+                                    response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                    error -> Log.e(TAG, "POST failed.", error)
+                            );
+                            Toast.makeText(context,device.name+" ON",Toast.LENGTH_SHORT).show();
+                        }else{
+                            String data = "{\"command\":\"D"+String.valueOf( position + 1)+"OFF\"}";
+                            RestOptions options = RestOptions.builder()
+                                    .addPath("/todo/"+enpoint)
+                                    .addBody(data.getBytes())
+                                    .build();
 
-                        Amplify.API.post(options,
-                                response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                error -> Log.e(TAG, "POST failed.", error)
-                        );
-                        //myData.child(resultemail).child("Control").child(device.name).setValue("0");
-                        Toast.makeText(context,device.name+" OFF",Toast.LENGTH_SHORT).show();
+                            Amplify.API.post(options,
+                                    response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                    error -> Log.e(TAG, "POST failed.", error)
+                            );
+                            //myData.child(resultemail).child("Control").child(device.name).setValue("0");
+                            Toast.makeText(context,device.name+" OFF",Toast.LENGTH_SHORT).show();
+                        }
+                    }else if(username.equals("do")){
+                        String enpoint = "Sdev" +String.valueOf( position + 3);
+                        if(isChecked){
+                            String data = "{\"command\":\"D"+String.valueOf( position + 3)+"ON\"}";
+                            RestOptions options = RestOptions.builder()
+                                    .addPath("/todo/"+enpoint)
+                                    .addBody(data.getBytes())
+                                    .build();
+
+                            Amplify.API.post(options,
+                                    response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                    error -> Log.e(TAG, "POST failed.", error)
+                            );
+                            Toast.makeText(context,device.name+" ON",Toast.LENGTH_SHORT).show();
+                        }else{
+                            String data = "{\"command\":\"D"+String.valueOf( position + 3)+"OFF\"}";
+                            RestOptions options = RestOptions.builder()
+                                    .addPath("/todo/"+enpoint)
+                                    .addBody(data.getBytes())
+                                    .build();
+
+                            Amplify.API.post(options,
+                                    response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                    error -> Log.e(TAG, "POST failed.", error)
+                            );
+                            //myData.child(resultemail).child("Control").child(device.name).setValue("0");
+                            Toast.makeText(context,device.name+" OFF",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
@@ -175,7 +212,12 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    gotouser();
+                    if(position==0){
+                        gotouser1();
+                    }else{
+                        gotouser2();
+                    }
+
                 }
             });
         }else{
@@ -299,8 +341,14 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
         Intent intent =new Intent(context, Device4Activity.class);
         context.startActivity(intent);
     }
-    protected void gotouser(){
+    protected void gotouser1(){
         Intent intent =new Intent(context, MainActivity.class);
+        intent.putExtra("username","do");
+        context.startActivity(intent);
+    }
+    protected void gotouser2(){
+        Intent intent =new Intent(context, MainActivity.class);
+        intent.putExtra("username","hoang");
         context.startActivity(intent);
     }
 

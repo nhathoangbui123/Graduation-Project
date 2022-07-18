@@ -26,11 +26,14 @@ public class DevicesFragment extends Fragment {
     private RecyclerView recyclerView;
     private CardviewAdapter cardviewAdapter;
     private String Sdev1,Sdev2,Sdev3,Sdev4;
+    private String username;
+    private String Uname;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_devices, container, false);
-
+        Uname = getArguments().getString("username");
+        Log.i(TAG, Uname);
         recyclerView = (RecyclerView) view.findViewById(R.id.rcview);
         //List<InfoCardview> device = createList();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -38,7 +41,7 @@ public class DevicesFragment extends Fragment {
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(gridLayoutManager);
-
+        username = Amplify.Auth.getCurrentUser().getUsername();
 //        cardviewAdapter = new CardviewAdapter(getContext(),device,getActivity());
 //        recyclerView.setAdapter(cardviewAdapter);
         mHandler.post(runnable);
@@ -61,10 +64,18 @@ public class DevicesFragment extends Fragment {
         InfoCardview dev2 = new InfoCardview("Device 2","unplugged",2,Sdev2);
         InfoCardview dev3 = new InfoCardview("Device 3","unplugged",2,Sdev3);
         InfoCardview dev4 = new InfoCardview("Device 4","unplugged",2,Sdev4);
-        list.add(dev1);
-        list.add(dev2);
-        list.add(dev3);
-        list.add(dev4);
+        if(username.equals("hoang")||Uname.equals("hoang")){
+            list.add(dev1);
+            list.add(dev2);
+        }else if(username.equals("do")||Uname.equals("do")){
+            list.add(dev3);
+            list.add(dev4);
+        }else{
+            list.add(dev1);
+            list.add(dev2);
+            list.add(dev3);
+            list.add(dev4);
+        }
         return list;
     }
     private void get_data() {
