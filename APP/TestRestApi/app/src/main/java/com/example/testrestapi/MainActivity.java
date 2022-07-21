@@ -36,7 +36,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Uname = getIntent().getStringExtra("username");
+        if(getIntent().getStringExtra("username")!=null){
+            Uname = getIntent().getStringExtra("username");
+        }else{
+            Uname = "h";
+        }
         Log.i(TAG, Uname);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -57,7 +61,19 @@ public class MainActivity extends AppCompatActivity {
         setupDrawerContent(nvDrawer);
         getSupportActionBar().setTitle("Monitor");
         getSupportActionBar().setSubtitle("Hello "+username);
-        loadFragment(new MonitorFragment());
+
+        Bundle bundle = new Bundle();
+        bundle.putString("username", Uname);
+
+        Fragment fragment;
+        fragment = new MonitorFragment();
+        fragment.setArguments(bundle);
+
+        loadFragment(fragment);
+        Intent myIntent = new Intent(MainActivity.this, NotiService.class);
+
+        // Call startService with Intent parameter.
+        this.startService(myIntent);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -86,16 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment;
+        Bundle bundle = new Bundle();
+        bundle.putString("username", Uname);
         switch(menuItem.getItemId()) {
             case R.id.monitor_navdrawer:
                 fragment = new MonitorFragment();
+                fragment.setArguments(bundle);
                 getSupportActionBar().setTitle("Monitor");
                 loadFragment(fragment);
                 break;
             case R.id.devices_navdrawer:
                 fragment = new DevicesFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("username", Uname);
                 fragment.setArguments(bundle);
                 getSupportActionBar().setTitle("Devices");
                 loadFragment(fragment);
@@ -166,16 +183,17 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment;
+            Bundle bundle = new Bundle();
+            bundle.putString("username", Uname);
             switch (item.getItemId()) {
                 case R.id.monitor_nav:
                     fragment = new MonitorFragment();
+                    fragment.setArguments(bundle);
                     getSupportActionBar().setTitle("Monitor");
                     loadFragment(fragment);
                     return true;
                 case R.id.device_nav:
                     fragment = new DevicesFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("username", Uname);
                     fragment.setArguments(bundle);
                     getSupportActionBar().setTitle("Devices");
                     loadFragment(fragment);

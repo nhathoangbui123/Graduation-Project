@@ -71,7 +71,7 @@
             android:layout_marginTop="260dp"
             android:layout_marginRight="22dp"
             android:gravity="left"
-            android:text="Email: do@gmail.com"
+            android:text="Email: doutt1812@gmail.com"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
         <ImageView

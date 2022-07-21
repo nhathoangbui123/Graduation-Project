@@ -55,7 +55,7 @@ public class HelpFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_SEND );
-                intent.putExtra(Intent.EXTRA_EMAIL , new String[]{"do@gmail.com"});
+                intent.putExtra(Intent.EXTRA_EMAIL , new String[]{"doutt1812@gmail.com"});
                 intent.putExtra(Intent.EXTRA_SUBJECT , "Support Home Energy App");
                 intent.putExtra(Intent.EXTRA_TEXT , "Please enter information");
                 intent.setType("message/rfc822");

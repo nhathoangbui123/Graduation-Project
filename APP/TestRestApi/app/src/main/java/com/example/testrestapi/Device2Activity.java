@@ -30,7 +30,7 @@ public class Device2Activity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CardviewAdapter cardviewAdapter;
     private String I2,E,U,F,Cost,P2,T2;
-    private String UString, I2String, EString, FString, P2String, T2String;
+    private String UString, I2String, EString, FString, P2String, T2String, C2String;
     private TextView cost;
     private ImageView imageCost;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
@@ -82,10 +82,10 @@ public class Device2Activity extends AppCompatActivity {
                 public void run() {
                     get_data();
                     List<InfoCardview> device = createList();
-                    if(Cost==null){
+                    if(C2String==null){
                         cost.setText("0"+" VND");
                     }else{
-                        cost.setText(Cost+" VND");
+                        cost.setText(C2String+" VND");
                     }
                     cardviewAdapter = new CardviewAdapter(Device2Activity.this,device,Device2Activity.this);
                     recyclerView.setAdapter(cardviewAdapter);
@@ -126,8 +126,8 @@ public class Device2Activity extends AppCompatActivity {
                         Double FParsed = Double.parseDouble(F);
                         FString = String.format("%,.2f", FParsed);
 
-                        Log.i(TAG, "GET succeeded: Energy " + restResponse.getData().asJSONObject().getString("E"));
-                        E=restResponse.getData().asJSONObject().getString("E");
+                        Log.i(TAG, "GET succeeded: Energy " + restResponse.getData().asJSONObject().getString("E2"));
+                        E=restResponse.getData().asJSONObject().getString("E2");
                         Double EParsed = Double.parseDouble(E);
                         EString = String.format("%,.2f", EParsed);
 
@@ -147,8 +147,10 @@ public class Device2Activity extends AppCompatActivity {
                         Double T2Parsed = Double.parseDouble(T2);
                         T2String = String.format("%,.2f", T2Parsed);
 
-                        Log.i(TAG, "GET succeeded: Cost " + restResponse.getData().asJSONObject().getString("Cost"));
-                        Cost=restResponse.getData().asJSONObject().getString("Cost");
+                        Log.i(TAG, "GET succeeded: Cost device 2 " + restResponse.getData().asJSONObject().getString("C2"));
+                        Cost=restResponse.getData().asJSONObject().getString("C2");
+                        Double C2Parsed = Double.parseDouble(Cost);
+                        C2String = String.format("%,.2f", C2Parsed);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
