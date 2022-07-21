@@ -32,6 +32,7 @@ void tx_task(void* arg)
   char *cmd = (char*)malloc(TX_BUFFER);
   while (1) {
     ESP_LOGI(TX_TASK_TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
+    
     sprintf(cmd, "Monitor.power_v.txt=\"%0.3fKWh\"\xFF\xFF\xFF",param.energy);
     ESP_LOGI(TX_TASK_TAG, "Monitor.power_v.txt=%0.3fKWh", param.energy);
     sendData(TX_TASK_TAG, cmd);	

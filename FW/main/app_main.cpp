@@ -30,6 +30,7 @@ void thersh_task(void *arg){
         }
 
         if(param.P1>param.T1){
+            param.T1F=1;
             for(int i=0;i<5;i++){
                 led[1].red=255;
                 led[1].blue=0;
@@ -44,6 +45,7 @@ void thersh_task(void *arg){
                 vTaskDelay( 200/ portTICK_PERIOD_MS );
             }
         }else{
+            param.T1F=0;
             if(device.dev1_state){
                 led[1].red=0;
                 led[1].blue=0;
@@ -57,6 +59,7 @@ void thersh_task(void *arg){
             }
         }
         if(param.P2>param.T2){
+            param.T2F=1;
             for(int i=0;i<5;i++){
                 led[2].red=255;
                 led[2].blue=0;
@@ -71,6 +74,7 @@ void thersh_task(void *arg){
                 vTaskDelay( 200/ portTICK_PERIOD_MS );
             }
         }else{
+            param.T2F=0;
             if(device.dev2_state){
                 led[2].red=0;
                 led[2].blue=0;
@@ -84,6 +88,7 @@ void thersh_task(void *arg){
             }
         }
         if(param.P3>param.T3){
+            param.T3F=1;
             for(int i=0;i<5;i++){
                 led[3].red=255;
                 led[3].blue=0;
@@ -98,6 +103,7 @@ void thersh_task(void *arg){
                 vTaskDelay( 200/ portTICK_PERIOD_MS );
             }
         }else{
+            param.T3F=0;
             if(device.dev3_state){
                 led[3].red=0;
                 led[3].blue=0;
@@ -111,6 +117,7 @@ void thersh_task(void *arg){
             }
         }
         if(param.P4>param.T4){
+            param.T4F=1;
             for(int i=0;i<5;i++){
                 led[4].red=255;
                 led[4].blue=0;
@@ -125,6 +132,7 @@ void thersh_task(void *arg){
                 vTaskDelay( 200/ portTICK_PERIOD_MS );
             }
         }else{
+            param.T4F=0;
             if(device.dev4_state){
                 led[4].red=0;
                 led[4].blue=0;
@@ -222,13 +230,28 @@ void pzem_task(void *arg){
         ESP_LOGI("TAG_PZEM004T","power     dev4=%f",param.P4);
         ESP_LOGI("TAG_PZEM004T","energy    dev4=%f",param.E4);
         ESP_LOGI("TAG_PZEM004T","frequency dev4=%f",param.F4);
-
+        
+        //total
         param.current = param.I1+param.I2+param.I3+param.I4;
-        param.voltage = (param.U1+param.U2+param.U3+param.U4)/3;
-        param.frequency = (param.F1+param.F2+param.F3+param.F4)/3;
+        param.voltage = (param.U1+param.U2+param.U3+param.U4)/4;
+        param.frequency = (param.F1+param.F2+param.F3+param.F4)/4;
         param.energy = (param.E1+param.E2+param.E3+param.E4);
+        param.cost = param.energy*param.EP;
+        //user1
+        param.current1=param.I1+param.I2;
+        param.energy1=param.E1+param.E2;
+        param.cost1=param.energy1*param.EP;
+        //user2
+        param.current2=param.I3+param.I4;
+        param.energy2=param.E3+param.E4;
+        param.cost2=param.energy2*param.EP;
+        //cost device
+        param.C1=param.E1*param.EP;
+        param.C2=param.E2*param.EP;
+        param.C3=param.E3*param.EP;
+        param.C4=param.E4*param.EP;
 
-        vTaskDelay( 5000 / portTICK_PERIOD_MS );
+        vTaskDelay( 10000 / portTICK_PERIOD_MS );
 	}
 }
 extern "C"  void app_main(){
@@ -386,7 +409,7 @@ extern "C"  void app_main(){
         led[0].green=255;
         ws2812_update(led);
 
-        xTaskCreate(&aws_iot_task, "aws_iot_task", 10*1024,NULL, 10, NULL);
+        xTaskCreate(&aws_iot_task, "aws_iot_task", 12*1024,NULL, 10, NULL);
     }else{
         for(int i=0;i<5;i++){
             gpio_set_level(BUZZER, 0);

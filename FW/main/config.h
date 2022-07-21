@@ -31,6 +31,7 @@ extern "C" {
 #endif
 
 typedef struct {
+    //total
     float voltage;
     float current;
     float power;
@@ -40,6 +41,16 @@ typedef struct {
     uint16_t alarms;
     float cost;
 
+    //user1
+    float current1;
+    float energy1;
+    float cost1;
+    //user2
+    float current2;
+    float energy2;
+    float cost2;
+
+    //device1
     float U1;
     float I1;
     float E1;
@@ -47,8 +58,8 @@ typedef struct {
     float F1;
     float C1;
     int T1;
-
-
+    int T1F;
+    //device2
     float U2;
     float I2;
     float E2;
@@ -56,7 +67,8 @@ typedef struct {
     float F2;
     float C2;
     int T2;
-
+    int T2F;
+    //device3
     float U3;
     float I3;
     float E3;
@@ -64,7 +76,8 @@ typedef struct {
     float F3;
     float C3;
     int T3;
-
+    int T3F;
+    //device4
     float U4;
     float I4;
     float E4;
@@ -72,7 +85,8 @@ typedef struct {
     float F4;
     float C4;
     int T4;
-
+    int T4F;
+    //settings
     int EP;
     char* WN;
     char* WP;

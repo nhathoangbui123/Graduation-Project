@@ -133,7 +133,7 @@ void aws_iot_task(void *arg){
     if(SUCCESS != rc) {
         ESP_LOGE(TAG, "Error subscribing : %d ", rc);
     }
-
+    
     while((NETWORK_ATTEMPTING_RECONNECT == rc || NETWORK_RECONNECTED == rc || SUCCESS == rc)) {
 
         //Max time the yield function will wait for read messages
@@ -150,36 +150,66 @@ void aws_iot_task(void *arg){
         pub = cJSON_CreateObject();
         cJSON_AddStringToObject(pub, "MAC", "01:02:03:04:05:06");
 
-        cJSON_AddNumberToObject(pub, "P", param.power);
-        cJSON_AddNumberToObject(pub, "E", param.energy);
+        //Total
+        //cJSON_AddNumberToObject(pub, "P", param.power);
+        //cJSON_AddNumberToObject(pub, "E", param.energy);
         cJSON_AddNumberToObject(pub, "F", param.frequency);
-        cJSON_AddNumberToObject(pub, "I", param.current);
+        //cJSON_AddNumberToObject(pub, "I", param.current);
         cJSON_AddNumberToObject(pub, "U", param.voltage);
+        //cJSON_AddNumberToObject(pub, "C", param.cost);
 
+        //User1
+        cJSON_AddNumberToObject(pub, "EU1", param.energy1);
+        cJSON_AddNumberToObject(pub, "IU1", param.current1);
+        cJSON_AddNumberToObject(pub, "CU1", param.cost1);
+
+        //User2
+        cJSON_AddNumberToObject(pub, "EU2", param.energy2);
+        cJSON_AddNumberToObject(pub, "IU2", param.current2);
+        cJSON_AddNumberToObject(pub, "CU2", param.cost2);
+
+        //Device cost
+        cJSON_AddNumberToObject(pub, "C1",param.C1);
+        cJSON_AddNumberToObject(pub, "C2",param.C2);
+        cJSON_AddNumberToObject(pub, "C3",param.C3);
+        cJSON_AddNumberToObject(pub, "C4",param.C4);
+
+        //Device current
         cJSON_AddNumberToObject(pub, "I1",param.I1);
         cJSON_AddNumberToObject(pub, "I2",param.I2);
         cJSON_AddNumberToObject(pub, "I3",param.I3);
         cJSON_AddNumberToObject(pub, "I4",param.I4);
 
+        //Device Energy
         cJSON_AddNumberToObject(pub, "E1",param.E1);
         cJSON_AddNumberToObject(pub, "E2",param.E2);
         cJSON_AddNumberToObject(pub, "E3",param.E3);
         cJSON_AddNumberToObject(pub, "E4",param.E4);
 
+        //Device power
         cJSON_AddNumberToObject(pub, "P1",param.P1);
         cJSON_AddNumberToObject(pub, "P2",param.P2);
         cJSON_AddNumberToObject(pub, "P3",param.P3);
         cJSON_AddNumberToObject(pub, "P4",param.P4);
 
+        //Device threshold
         cJSON_AddNumberToObject(pub, "T1",param.T1);
         cJSON_AddNumberToObject(pub, "T2",param.T2);
         cJSON_AddNumberToObject(pub, "T3",param.T3);
         cJSON_AddNumberToObject(pub, "T4",param.T4);
 
+        //Threshold flag
+        cJSON_AddNumberToObject(pub, "T1F",param.T1F);
+        cJSON_AddNumberToObject(pub, "T2F",param.T2F);
+        cJSON_AddNumberToObject(pub, "T3F",param.T3F);
+        cJSON_AddNumberToObject(pub, "T4F",param.T4F);
+
+        //Settings
         cJSON_AddNumberToObject(pub, "EP",param.EP);
         cJSON_AddStringToObject(pub, "WN",param.WN);
         cJSON_AddStringToObject(pub, "WP",param.WP);
 
+        //Device status
         cJSON_AddNumberToObject(pub, "Sdev1", device.dev1_state);
         cJSON_AddNumberToObject(pub, "Sdev2", device.dev2_state);
         cJSON_AddNumberToObject(pub, "Sdev3", device.dev3_state);
