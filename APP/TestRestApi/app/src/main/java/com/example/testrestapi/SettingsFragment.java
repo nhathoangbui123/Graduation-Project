@@ -35,13 +35,14 @@ public class SettingsFragment extends Fragment {
     private String D2 = "";
     private String D3 = "";
     private String D4 = "";
+    private String username;
     private final Handler mHandler = new Handler(Looper.getMainLooper());
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         processDialog = new ProgressDialog(getContext());
-
+        username = Amplify.Auth.getCurrentUser().getUsername();
         cost = view.findViewById(R.id.cost);
         wifiname = view.findViewById(R.id.wifiname);
         wifipass = view.findViewById(R.id.wifipass);
@@ -53,6 +54,7 @@ public class SettingsFragment extends Fragment {
         cost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setCancelable(true);
                 final EditText input = new EditText(getContext());
@@ -182,173 +184,393 @@ public class SettingsFragment extends Fragment {
         d1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setCancelable(true);
-                final EditText input = new EditText(getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-                builder.setView(input);
-                builder.setTitle("Set Device 1 Threshold");
-                builder.setMessage("Please Enter Threshold for device 1 (kWh)");
-                builder.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                if(username.equals("hoang")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 1 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 1 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 //                                processDialog.setMessage("Please Wait For Logout");
 //                                processDialog.show();
-                                D1 = input.getText().toString();
-                                d1.setText("Device 1 Threshold: "+D1+"kWh");
-                                Log.i(TAG,"Electricity Price: "+D1+"kWh");
-                                String enpoint = "T1";
-                                String data = "{\"command\": \"T1\",\"body\": \""+D1+"\"}";
-                                RestOptions options = RestOptions.builder()
-                                        .addPath("/todo/"+enpoint)
-                                        .addBody(data.getBytes())
-                                        .build();
+                                    D1 = input.getText().toString();
+                                    d1.setText("Device 1 Threshold: "+D1+" W");
+                                    Log.i(TAG,"Device 1 Threshold: "+D1+" W");
+                                    String enpoint = "T1";
+                                    String data = "{\"command\": \"T1\",\"body\": \""+D1+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
 
-                                Amplify.API.post(options,
-                                        response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                        error -> Log.e(TAG, "POST failed.", error)
-                                );
-                            }
-                        });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else if(username.equals("admin")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 1 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 1 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                processDialog.setMessage("Please Wait For Logout");
+//                                processDialog.show();
+                                    D1 = input.getText().toString();
+                                    d1.setText("Device 1 Threshold: "+D1+" W");
+                                    Log.i(TAG,"Device 1 Threshold: "+D1+" W");
+                                    String enpoint = "T1";
+                                    String data = "{\"command\": \"T1\",\"body\": \""+D1+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
+
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setTitle("Set Device 1 Threshold");
+                    builder.setMessage("Current user not permit for set threshold device 1");
+                    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
         d2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setCancelable(true);
-                final EditText input = new EditText(getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-                builder.setView(input);
-                builder.setTitle("Set Device 2 Threshold");
-                builder.setMessage("Please Enter Threshold for device 2 (kWh)");
-                builder.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                if(username.equals("hoang")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 2 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 2 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 //                                processDialog.setMessage("Please Wait For Logout");
 //                                processDialog.show();
-                                D2 = input.getText().toString();
-                                d2.setText("Device 1 Threshold: "+D2+"kWh");
-                                Log.i(TAG,"Electricity Price: "+D2+"kWh");
-                                String enpoint = "T2";
-                                String data = "{\"command\": \"T2\",\"body\": \""+D2+"\"}";
-                                RestOptions options = RestOptions.builder()
-                                        .addPath("/todo/"+enpoint)
-                                        .addBody(data.getBytes())
-                                        .build();
+                                    D2 = input.getText().toString();
+                                    d2.setText("Device 2 Threshold: "+D2+" W");
+                                    Log.i(TAG,"Device 2 Threshold: "+D2+" W");
+                                    String enpoint = "T2";
+                                    String data = "{\"command\": \"T2\",\"body\": \""+D2+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
 
-                                Amplify.API.post(options,
-                                        response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                        error -> Log.e(TAG, "POST failed.", error)
-                                );
-                            }
-                        });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else if(username.equals("admin")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 2 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 2 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                processDialog.setMessage("Please Wait For Logout");
+//                                processDialog.show();
+                                    D2 = input.getText().toString();
+                                    d2.setText("Device 2 Threshold: "+D2+" W");
+                                    Log.i(TAG,"Device 2 Threshold: "+D2+" W");
+                                    String enpoint = "T2";
+                                    String data = "{\"command\": \"T2\",\"body\": \""+D2+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
+
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setTitle("Set Device 2 Threshold");
+                    builder.setMessage("Current user not permit for set threshold device 2");
+                    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
         d3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setCancelable(true);
-                final EditText input = new EditText(getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-                builder.setView(input);
-                builder.setTitle("Set Device 3 Threshold");
-                builder.setMessage("Please Enter Threshold for device 3 (kWh)");
-                builder.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                if(username.equals("do")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 3 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 3 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 //                                processDialog.setMessage("Please Wait For Logout");
 //                                processDialog.show();
-                                D3 = input.getText().toString();
-                                d3.setText("Device 3 Threshold: "+D3+"kWh");
-                                Log.i(TAG,"Electricity Price: "+D3+"kWh");
-                                String enpoint = "T3";
-                                String data = "{\"command\": \"T3\",\"body\": \""+D3+"\"}";
-                                RestOptions options = RestOptions.builder()
-                                        .addPath("/todo/"+enpoint)
-                                        .addBody(data.getBytes())
-                                        .build();
+                                    D3 = input.getText().toString();
+                                    d3.setText("Device 3 Threshold: "+D3+" W");
+                                    Log.i(TAG,"Device 3 Threshold: "+D3+" W");
+                                    String enpoint = "T3";
+                                    String data = "{\"command\": \"T3\",\"body\": \""+D3+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
 
-                                Amplify.API.post(options,
-                                        response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                        error -> Log.e(TAG, "POST failed.", error)
-                                );
-                            }
-                        });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else if(username.equals("admin")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 3 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 3 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                processDialog.setMessage("Please Wait For Logout");
+//                                processDialog.show();
+                                    D3 = input.getText().toString();
+                                    d3.setText("Device 3 Threshold: "+D3+" W");
+                                    Log.i(TAG,"Device 3 Threshold: "+D3+" W");
+                                    String enpoint = "T3";
+                                    String data = "{\"command\": \"T3\",\"body\": \""+D3+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
+
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setTitle("Set Device 3 Threshold");
+                    builder.setMessage("Current user not permit for set threshold device 3");
+                    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
         d4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setCancelable(true);
-                final EditText input = new EditText(getContext());
-                input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
-                builder.setView(input);
-                builder.setTitle("Set Device 4 Threshold");
-                builder.setMessage("Please Enter Threshold for device 4 (kWh)");
-                builder.setPositiveButton("Yes",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                if(username.equals("do")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 4 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 4 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
 //                                processDialog.setMessage("Please Wait For Logout");
 //                                processDialog.show();
-                                D4 = input.getText().toString();
-                                d4.setText("Device 4 Threshold: "+D4+"kWh");
-                                Log.i(TAG,"Electricity Price: "+D4+"kWh");
-                                String enpoint = "T4";
-                                String data = "{\"command\": \"T4\",\"body\": \""+D4+"\"}";
-                                RestOptions options = RestOptions.builder()
-                                        .addPath("/todo/"+enpoint)
-                                        .addBody(data.getBytes())
-                                        .build();
+                                    D4 = input.getText().toString();
+                                    d4.setText("Device 4 Threshold: "+D4+" W");
+                                    Log.i(TAG,"Device 4 Threshold: "+D4+" W");
+                                    String enpoint = "T4";
+                                    String data = "{\"command\": \"T4\",\"body\": \""+D4+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
 
-                                Amplify.API.post(options,
-                                        response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
-                                        error -> Log.e(TAG, "POST failed.", error)
-                                );
-                            }
-                        });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else if(username.equals("admin")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    final EditText input = new EditText(getContext());
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_CLASS_NUMBER);
+                    builder.setView(input);
+                    builder.setTitle("Set Device 4 Threshold");
+                    builder.setMessage("Please Enter Threshold for device 4 (W)");
+                    builder.setPositiveButton("Yes",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+//                                processDialog.setMessage("Please Wait For Logout");
+//                                processDialog.show();
+                                    D4 = input.getText().toString();
+                                    d4.setText("Device 4 Threshold: "+D4+" W");
+                                    Log.i(TAG,"Device 4 Threshold: "+D4+" W");
+                                    String enpoint = "T4";
+                                    String data = "{\"command\": \"T4\",\"body\": \""+D4+"\"}";
+                                    RestOptions options = RestOptions.builder()
+                                            .addPath("/todo/"+enpoint)
+                                            .addBody(data.getBytes())
+                                            .build();
+
+                                    Amplify.API.post(options,
+                                            response -> Log.i(TAG, "POST succeeded: " + response.getData().asString()),
+                                            error -> Log.e(TAG, "POST failed.", error)
+                                    );
+                                }
+                            });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }else{
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setTitle("Set Device 4 Threshold");
+                    builder.setMessage("Current user not permit for set threshold device 4");
+                    builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
             }
         });
         return view;
@@ -376,27 +598,27 @@ public class SettingsFragment extends Fragment {
                     }
 
                     if(D1==null){
-                        d1.setText("Device 1 Threshold: 0kWh");
+                        d1.setText("Device 1 Threshold: 0 W");
                     }else{
-                        d1.setText("Device 1 Threshold: "+D1+"kWh");
+                        d1.setText("Device 1 Threshold: "+D1+" W");
                     }
 
                     if(D2==null){
-                        d2.setText("Device 2 Threshold: 0kWh");
+                        d2.setText("Device 2 Threshold: 0 W");
                     }else{
-                        d2.setText("Device 2 Threshold: "+D2+"kWh");
+                        d2.setText("Device 2 Threshold: "+D2+" W");
                     }
 
                     if(D3==null){
-                        d3.setText("Device 3 Threshold: 0kWh");
+                        d3.setText("Device 3 Threshold: 0 W");
                     }else{
-                        d3.setText("Device 3 Threshold: "+D3+"kWh");
+                        d3.setText("Device 3 Threshold: "+D3+" W");
                     }
 
                     if(D4==null){
-                        d4.setText("Device 4 Threshold: 0kWh");
+                        d4.setText("Device 4 Threshold: 0 W");
                     }else{
-                        d4.setText("Device 4 Threshold: "+D4+"kWh");
+                        d4.setText("Device 4 Threshold: "+D4+" W");
                     }
 
                     mHandler.postDelayed(this, 1000);

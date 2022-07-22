@@ -207,6 +207,13 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
             });
         }else if(device.getType()==3){
             int imageResId = getDrawableResIdByName(device.getFlagName());
+            if(position==0){
+                holder.tvPhone.setText("+84399846623");
+                holder.tvUsername.setText("trung do");
+            }else{
+                holder.tvPhone.setText("+84797818548");
+                holder.tvUsername.setText("nhat hoang");
+            }
             holder.Title.setText(device.name + " ");
             holder.imageView.setImageResource(imageResId);
             holder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -258,9 +265,9 @@ public class CardviewAdapter extends RecyclerView.Adapter<CardviewAdapter.Cardvi
             if(device.name.equals("Threshold")){
                 //Log.i(TAG, "Set Text Frequency" + F);
                 if(device.getParameter()==null){
-                    holder.paramater.setText("0"+ " kWh");
+                    holder.paramater.setText("0"+ " W");
                 }else{
-                    holder.paramater.setText(device.getParameter()+ " kWh");
+                    holder.paramater.setText(device.getParameter()+ " W");
                 }
             }
             if(device.name.equals("Power")){

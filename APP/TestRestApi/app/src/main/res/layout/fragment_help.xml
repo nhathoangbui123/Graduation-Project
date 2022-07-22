@@ -74,18 +74,19 @@
             android:text="Email: doutt1812@gmail.com"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
+
         <ImageView
             android:id="@+id/imageadmin2"
             android:layout_width="150dp"
-            android:layout_height="180dp"
+            android:layout_height="150dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="120dp"
-            android:layout_marginRight="120dp"
             android:layout_marginTop="310dp"
-            android:background="@drawable/admindo" />
+            android:layout_marginRight="120dp"
+            android:background="@drawable/hoang" />
 
         <TextView
             android:id="@+id/admin2"
@@ -96,7 +97,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="22dp"
-            android:layout_marginTop="490dp"
+            android:layout_marginTop="460dp"
             android:layout_marginRight="22dp"
             android:gravity="left"
             android:text="Admin 2: Nhat Hoang"
@@ -112,7 +113,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="22dp"
-            android:layout_marginTop="530dp"
+            android:layout_marginTop="500dp"
             android:layout_marginRight="22dp"
             android:gravity="left"
             android:text="Phone Number: 0797818548"
@@ -127,12 +128,27 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="22dp"
-            android:layout_marginTop="570dp"
+            android:layout_marginTop="540dp"
             android:layout_marginRight="22dp"
             android:gravity="left"
             android:text="Email: nhathoangbui123@gmail.com"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
+
+        <ImageView
+            android:id="@+id/fhq"
+            android:layout_width="250dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginStart="75dp"
+            android:layout_marginLeft="75dp"
+            android:layout_marginTop="580dp"
+            android:layout_marginEnd="75dp"
+            android:layout_marginRight="75dp"
+            android:background="@drawable/clc" />
     </RelativeLayout>
 
 </FrameLayout>

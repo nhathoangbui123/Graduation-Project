@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 public class HelpFragment extends Fragment {
     private final String TAG = HelpFragment.class.getSimpleName();
     private TextView phonead1, phonead2, email1, email2;
-    private ImageView ad1, ad2;
+    private ImageView ad1, ad2, fhq;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,6 +36,14 @@ public class HelpFragment extends Fragment {
         ad2 = view.findViewById(R.id.imageadmin2);
         email2 = view.findViewById(R.id.emailadmin2);
 
+        fhq= view.findViewById(R.id.fhq);
+        fhq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent fhqIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://fhq.hcmute.edu.vn/"));
+                startActivity(fhqIntent);
+            }
+        });
         phonead1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
