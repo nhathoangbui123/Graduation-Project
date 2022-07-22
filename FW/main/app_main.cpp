@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <math.h>
 
 #include "esp_system.h"
 #include "esp_event.h"
@@ -185,27 +186,56 @@ void pzem_task(void *arg){
 
         param.U1=pzemobj[0].voltage();
         param.I1=pzemobj[0].current();
-        param.P1=pzemobj[0].power();
+        //param.P1=pzemobj[0].power();
         param.E1=pzemobj[0].energy();
         param.F1=pzemobj[0].frequency();
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U2=pzemobj[1].voltage();
         param.I2=pzemobj[1].current();
-        param.P2=pzemobj[1].power();
+        //param.P2=pzemobj[1].power();
         param.E2=pzemobj[1].energy();
         param.F2=pzemobj[1].frequency();
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U3=pzemobj[2].voltage();
         param.I3=pzemobj[2].current();
-        param.P3=pzemobj[2].power();
+        //param.P3=pzemobj[2].power();
         param.E3=pzemobj[2].energy();
         param.F3=pzemobj[2].frequency();
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U4=pzemobj[3].voltage();
         param.I4=pzemobj[3].current();
-        param.P4=pzemobj[3].power();
+        //param.P4=pzemobj[3].power();
         param.E4=pzemobj[3].energy();
         param.F4=pzemobj[3].frequency();
+        vTaskDelay( 1000 / portTICK_PERIOD_MS );
+        
+        //total
+        param.current = param.I1+param.I2+param.I3+param.I4;
+        param.voltage = (param.U1+param.U2+param.U3+param.U4)/4;
+        param.frequency = (param.F1+param.F2+param.F3+param.F4)/4;
+        param.energy = (param.E1+param.E2+param.E3+param.E4);
+        param.cost = param.energy*param.EP;
+        //power device
+        param.P1=param.voltage*param.I1*(1/sqrt(2));
+        param.P2=param.voltage*param.I2*(1/sqrt(2));
+        param.P3=param.voltage*param.I3*(1/sqrt(2));
+        param.P4=param.voltage*param.I4*(1/sqrt(2));
+        //user1
+        param.current1=param.I1+param.I2;
+        param.energy1=param.E1+param.E2;
+        param.cost1=param.energy1*param.EP;
+        //user2
+        param.current2=param.I3+param.I4;
+        param.energy2=param.E3+param.E4;
+        param.cost2=param.energy2*param.EP;
+        //cost device
+        param.C1=param.E1*param.EP;
+        param.C2=param.E2*param.EP;
+        param.C3=param.E3*param.EP;
+        param.C4=param.E4*param.EP;
 
         ESP_LOGI("TAG_PZEM004T","voltage   dev1=%f",param.U1);
         ESP_LOGI("TAG_PZEM004T","current   dev1=%f",param.I1);
@@ -230,28 +260,8 @@ void pzem_task(void *arg){
         ESP_LOGI("TAG_PZEM004T","power     dev4=%f",param.P4);
         ESP_LOGI("TAG_PZEM004T","energy    dev4=%f",param.E4);
         ESP_LOGI("TAG_PZEM004T","frequency dev4=%f",param.F4);
-        
-        //total
-        param.current = param.I1+param.I2+param.I3+param.I4;
-        param.voltage = (param.U1+param.U2+param.U3+param.U4)/4;
-        param.frequency = (param.F1+param.F2+param.F3+param.F4)/4;
-        param.energy = (param.E1+param.E2+param.E3+param.E4);
-        param.cost = param.energy*param.EP;
-        //user1
-        param.current1=param.I1+param.I2;
-        param.energy1=param.E1+param.E2;
-        param.cost1=param.energy1*param.EP;
-        //user2
-        param.current2=param.I3+param.I4;
-        param.energy2=param.E3+param.E4;
-        param.cost2=param.energy2*param.EP;
-        //cost device
-        param.C1=param.E1*param.EP;
-        param.C2=param.E2*param.EP;
-        param.C3=param.E3*param.EP;
-        param.C4=param.E4*param.EP;
 
-        vTaskDelay( 10000 / portTICK_PERIOD_MS );
+        vTaskDelay( 6000 / portTICK_PERIOD_MS );
 	}
 }
 extern "C"  void app_main(){

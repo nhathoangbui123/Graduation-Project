@@ -50,12 +50,12 @@ void tx_task(void* arg)
     sendData(TX_TASK_TAG, cmd);
 
     //electric price and total cost
-    sprintf(cmd, "Check.vndPerKwh.txt=\"%dVND/kWh\"\xFF\xFF\xFF",param.EP);
-    ESP_LOGI(TX_TASK_TAG, "Check.vndPerKwh.txt=%dVND/kWh", param.EP);
+    sprintf(cmd, "Check.vndPerKwh.txt=\"%d VND/kWh\"\xFF\xFF\xFF",param.EP);
+    ESP_LOGI(TX_TASK_TAG, "Check.vndPerKwh.txt=%d VND/kWh", param.EP);
     sendData(TX_TASK_TAG, cmd);
 
-    sprintf(cmd, "Check.t0.txt=\"%0.1fVND\"\xFF\xFF\xFF",param.cost);
-    ESP_LOGI(TX_TASK_TAG, "Check.t0.txt=%0.1fVND", param.cost);
+    sprintf(cmd, "Check.t0.txt=\"%0.1f VND\"\xFF\xFF\xFF",param.cost);
+    ESP_LOGI(TX_TASK_TAG, "Check.t0.txt=%0.1f VND", param.cost);
     sendData(TX_TASK_TAG, cmd);
 
     //wifi name and wifi password
@@ -68,20 +68,20 @@ void tx_task(void* arg)
     sendData(TX_TASK_TAG, cmd);
     
     //threshold
-    sprintf(cmd, "Monitor_Dev1.thr_dev1.txt=\"%dkWh\"\xFF\xFF\xFF",param.T1);
-    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev1.thr_dev1.txt=%dkWh", param.T1);
+    sprintf(cmd, "Monitor_Dev1.thr_dev1.txt=\"%d W\"\xFF\xFF\xFF",param.T1);
+    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev1.thr_dev1.txt=%d W", param.T1);
     sendData(TX_TASK_TAG, cmd);
 
-    sprintf(cmd, "Monitor_Dev2.thr_dev2.txt=\"%dkWh\"\xFF\xFF\xFF",param.T2);
-    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev2.thr_dev2.txt=%dkWh", param.T2);
+    sprintf(cmd, "Monitor_Dev2.thr_dev2.txt=\"%d W\"\xFF\xFF\xFF",param.T2);
+    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev2.thr_dev2.txt=%d W", param.T2);
     sendData(TX_TASK_TAG, cmd);
 
-    sprintf(cmd, "Monitor_Dev3.thr_dev3.txt=\"%dkWh\"\xFF\xFF\xFF",param.T3);
-    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev3.thr_dev3.txt=%dkWh", param.T3);
+    sprintf(cmd, "Monitor_Dev3.thr_dev3.txt=\"%d W\"\xFF\xFF\xFF",param.T3);
+    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev3.thr_dev3.txt=%d W", param.T3);
     sendData(TX_TASK_TAG, cmd);
 
-    sprintf(cmd, "Monitor_Dev4.thr_dev4.txt=\"%dkWh\"\xFF\xFF\xFF",param.T4);
-    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev4.thr_dev4.txt=%dkWh", param.T4);
+    sprintf(cmd, "Monitor_Dev4.thr_dev4.txt=\"%d W\"\xFF\xFF\xFF",param.T4);
+    ESP_LOGI(TX_TASK_TAG, "Monitor_Dev4.thr_dev4.txt=%d W", param.T4);
     sendData(TX_TASK_TAG, cmd);
     
     if(device.dev1_state){
