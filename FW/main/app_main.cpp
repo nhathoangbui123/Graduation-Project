@@ -26,8 +26,10 @@ void thersh_task(void *arg){
     while (1) {
         if(param.P1>param.T1||param.P2>param.T2||param.P3>param.T3||param.P4>param.T4){
             gpio_set_level(BUZZER, 0);
+            sendData(TX_TASK_TAG, "page 23\xFF\xFF\xFF");
         }else{
             gpio_set_level(BUZZER, 1);
+            //sendData(TX_TASK_TAG, "page 1\xFF\xFF\xFF");
         }
 
         if(param.P1>param.T1){
@@ -186,28 +188,28 @@ void pzem_task(void *arg){
 
         param.U1=pzemobj[0].voltage();
         param.I1=pzemobj[0].current();
-        //param.P1=pzemobj[0].power();
+        param.P1=pzemobj[0].power();
         param.E1=pzemobj[0].energy();
         param.F1=pzemobj[0].frequency();
         vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U2=pzemobj[1].voltage();
         param.I2=pzemobj[1].current();
-        //param.P2=pzemobj[1].power();
+        param.P2=pzemobj[1].power();
         param.E2=pzemobj[1].energy();
         param.F2=pzemobj[1].frequency();
         vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U3=pzemobj[2].voltage();
         param.I3=pzemobj[2].current();
-        //param.P3=pzemobj[2].power();
+        param.P3=pzemobj[2].power();
         param.E3=pzemobj[2].energy();
         param.F3=pzemobj[2].frequency();
         vTaskDelay( 1000 / portTICK_PERIOD_MS );
 
         param.U4=pzemobj[3].voltage();
         param.I4=pzemobj[3].current();
-        //param.P4=pzemobj[3].power();
+        param.P4=pzemobj[3].power();
         param.E4=pzemobj[3].energy();
         param.F4=pzemobj[3].frequency();
         vTaskDelay( 1000 / portTICK_PERIOD_MS );
@@ -219,10 +221,10 @@ void pzem_task(void *arg){
         param.energy = (param.E1+param.E2+param.E3+param.E4);
         param.cost = param.energy*param.EP;
         //power device
-        param.P1=param.voltage*param.I1*(1/sqrt(2));
-        param.P2=param.voltage*param.I2*(1/sqrt(2));
-        param.P3=param.voltage*param.I3*(1/sqrt(2));
-        param.P4=param.voltage*param.I4*(1/sqrt(2));
+        // param.P1=param.voltage*param.I1*(1/sqrt(2));
+        // param.P2=param.voltage*param.I2*(1/sqrt(2));
+        // param.P3=param.voltage*param.I3*(1/sqrt(2));
+        // param.P4=param.voltage*param.I4*(1/sqrt(2));
         //user1
         param.current1=param.I1+param.I2;
         param.energy1=param.E1+param.E2;
