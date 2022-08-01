@@ -27,6 +27,8 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.21979166666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_menu_display.xml" value="0.21927083333333333" />
+        <entry key="app/src/main/res/layout/activity_notif.xml" value="0.24895833333333334" />
+        <entry key="app/src/main/res/layout/activity_notification.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.32083333333333336" />
         <entry key="app/src/main/res/layout/app_bar.xml" value="0.21927083333333333" />

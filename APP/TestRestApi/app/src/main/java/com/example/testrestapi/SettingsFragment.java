@@ -580,9 +580,9 @@ public class SettingsFragment extends Fragment {
                 public void run() {
                     get_data();
                     if(Cost==null){
-                        cost.setText("Electricity Price: 0 VND/kWh");
+                        cost.setText("Electric Price: 0 VND/kWh");
                     }else{
-                        cost.setText("Electricity Price: "+Cost+"VND/kWh");
+                        cost.setText("Electric Price: "+Cost+"VND/kWh");
                     }
 
                     if(WifiName==null){

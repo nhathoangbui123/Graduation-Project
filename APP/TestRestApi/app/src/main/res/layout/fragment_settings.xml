@@ -41,7 +41,7 @@
             android:layout_marginTop="100dp"
             android:layout_marginRight="22dp"
             android:gravity="left"
-            android:text="Cost:"
+            android:text="Electric Price:"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
 
@@ -76,6 +76,7 @@
             android:text="Wifi Pass:"
             android:textColor="#FFFFFF"
             android:textSize="20dp" />
+
         <TextView
             android:id="@+id/d1thresh"
             android:layout_width="126dp"
