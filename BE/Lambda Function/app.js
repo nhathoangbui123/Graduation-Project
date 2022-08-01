@@ -55,7 +55,7 @@ app.get('/todo', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(data.Item));
   })
-  .catch(console.error)
+  .catch()
   
   //console.log('body get: ', res.json);
 });
@@ -135,8 +135,8 @@ app.post('/todo/Sdev1', function(req, res) {
     },
   })
   .promise()
-  .then(data => console.log(data.Attributes))
-  .catch(console.error)
+  .then()
+  .catch()
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 //enpoint Status Dev 2
@@ -160,8 +160,8 @@ app.post('/todo/Sdev2', function(req, res) {
     },
   })
   .promise()
-  .then(data => console.log(data.Attributes))
-  .catch(console.error)
+  .then()
+  .catch()
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 //enpoint Status Dev 3
@@ -185,8 +185,8 @@ app.post('/todo/Sdev3', function(req, res) {
     },
   })
   .promise()
-  .then(data => console.log(data.Attributes))
-  .catch(console.error)
+  .then()
+  .catch()
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 //enpoint Status Dev 4
@@ -210,8 +210,8 @@ app.post('/todo/Sdev4', function(req, res) {
     },
   })
   .promise()
-  .then(data => console.log(data.Attributes))
-  .catch(console.error)
+  .then()
+  .catch()
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 //enpoint Electricity Price
@@ -412,8 +412,8 @@ app.delete('/todo/*', function(req, res) {
 
 
 //listen
-app.listen(3000, function() {
-    console.log("App started")
+app.listen(2000, function() {
+    //console.log("App started")
 });
 
 module.exports = app
