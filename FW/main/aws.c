@@ -232,7 +232,7 @@ void aws_iot_task(void *arg){
         }
         free(data_json);
         cJSON_Delete(pub);
-        vTaskDelay(10000 / portTICK_RATE_MS);
+        vTaskDelay(500 / portTICK_RATE_MS);
     }
     ESP_LOGE(TAG, "An error occurred in the main loop.");
 }

@@ -65,14 +65,19 @@ int ParseCmd(char *text, char* body)
       case D1ON:
         ESP_LOGI("CMD_HMI","D1ON");
         gpio_set_level(DEVICE_1, ON);
+
         led[1].red=0;
         led[1].blue=0;
         led[1].green=255;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev1_state = 1;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev1", "1");
         NVSDriverClose();
@@ -81,14 +86,19 @@ int ParseCmd(char *text, char* body)
       case D1OFF:
         ESP_LOGI("CMD_HMI","D1OFF");
         gpio_set_level(DEVICE_1, OFF);
+
         led[1].red=255;
         led[1].blue=0;
         led[1].green=0;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev1_state = 0;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev1", "0");
         NVSDriverClose();
@@ -97,14 +107,19 @@ int ParseCmd(char *text, char* body)
       case D2ON:
         ESP_LOGI("CMD_HMI","D2ON");
         gpio_set_level(DEVICE_2, ON);
+
         led[2].red=0;
         led[2].blue=0;
         led[2].green=255;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev2_state = 1;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev2", "1");
         NVSDriverClose();
@@ -113,14 +128,18 @@ int ParseCmd(char *text, char* body)
       case D2OFF:
         ESP_LOGI("CMD_HMI","D2OFF");
         gpio_set_level(DEVICE_2, OFF);
+
         led[2].red=255;
         led[2].blue=0;
         led[2].green=0;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
         device.dev2_state = 0;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev2", "0");
         NVSDriverClose();
@@ -129,14 +148,19 @@ int ParseCmd(char *text, char* body)
       case D3ON:
         ESP_LOGI("CMD_HMI","D3ON");
         gpio_set_level(DEVICE_3, ON);
+
         led[3].red=0;
         led[3].blue=0;
         led[3].green=255;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev3_state = 1;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev3", "1");
         NVSDriverClose();
@@ -145,14 +169,19 @@ int ParseCmd(char *text, char* body)
       case D3OFF:
         ESP_LOGI("CMD_HMI","D3OFF");
         gpio_set_level(DEVICE_3, OFF);
+
         led[3].red=255;
         led[3].blue=0;
         led[3].green=0;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev3_state = 0;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev3", "0");
         NVSDriverClose();
@@ -161,14 +190,19 @@ int ParseCmd(char *text, char* body)
       case D4ON:
         ESP_LOGI("CMD_HMI","D4ON");
         gpio_set_level(DEVICE_4, ON);
+
         led[4].red=0;
         led[4].blue=0;
         led[4].green=255;
+        
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev4_state = 1;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev4", "1");
         NVSDriverClose();
@@ -177,14 +211,19 @@ int ParseCmd(char *text, char* body)
       case D4OFF:
         ESP_LOGI("CMD_HMI","D4OFF");
         gpio_set_level(DEVICE_4, OFF);
+
         led[4].red=255;
         led[4].blue=0;
         led[4].green=0;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev4_state = 0;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev4", "0");
         NVSDriverClose();
@@ -196,6 +235,7 @@ int ParseCmd(char *text, char* body)
         gpio_set_level(DEVICE_2, ON);
         gpio_set_level(DEVICE_3, ON);
         gpio_set_level(DEVICE_4, ON);
+
         led[1].red=0;
         led[1].blue=0;
         led[1].green=255;
@@ -211,14 +251,18 @@ int ParseCmd(char *text, char* body)
         led[4].red=0;
         led[4].blue=0;
         led[4].green=255;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev1_state = 1;
         device.dev2_state = 1;
         device.dev3_state = 1;
         device.dev4_state = 1;
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev1", "1");
         NVSDriverWrite("Sdev2", "1");
@@ -233,6 +277,7 @@ int ParseCmd(char *text, char* body)
         gpio_set_level(DEVICE_2, OFF);
         gpio_set_level(DEVICE_3, OFF);
         gpio_set_level(DEVICE_4, OFF);
+
         led[1].red=255;
         led[1].blue=0;
         led[1].green=0;
@@ -248,14 +293,18 @@ int ParseCmd(char *text, char* body)
         led[4].red=255;
         led[4].blue=0;
         led[4].green=0;
+
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
         gpio_set_level(BUZZER, 1);
+
         ws2812_update(led);
+
         device.dev1_state = 0;
         device.dev2_state = 0;
         device.dev3_state = 0;
         device.dev4_state = 0;
+        
         NVSDriverOpen("nvs");
         NVSDriverWrite("Sdev1", "0");
         NVSDriverWrite("Sdev2", "0");
@@ -267,6 +316,10 @@ int ParseCmd(char *text, char* body)
       case T1:
         ESP_LOGI("CMD_HMI","T1");
 
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("T1", body);
         NVSDriverClose();
@@ -275,6 +328,10 @@ int ParseCmd(char *text, char* body)
       break;
       case T2:
         ESP_LOGI("CMD_HMI","T2");
+
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
 
         NVSDriverOpen("nvs");
         NVSDriverWrite("T2", body);
@@ -285,6 +342,10 @@ int ParseCmd(char *text, char* body)
       case T3:
         ESP_LOGI("CMD_HMI","T3");
 
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("T3", body);
         NVSDriverClose();
@@ -293,6 +354,10 @@ int ParseCmd(char *text, char* body)
       break;
       case T4:
         ESP_LOGI("CMD_HMI","T4");
+
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
 
         NVSDriverOpen("nvs");
         NVSDriverWrite("T4", body);
@@ -303,6 +368,10 @@ int ParseCmd(char *text, char* body)
       case EP:
         ESP_LOGI("CMD_HMI","EP");
 
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("EP", body);
         NVSDriverClose();
@@ -312,6 +381,10 @@ int ParseCmd(char *text, char* body)
       case WN:
         ESP_LOGI("CMD_HMI","WN");
 
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
+
         NVSDriverOpen("nvs");
         NVSDriverWrite("WN", body);
         NVSDriverClose();
@@ -320,6 +393,10 @@ int ParseCmd(char *text, char* body)
       break;
       case WP:
         ESP_LOGI("CMD_HMI","WP");
+        
+        gpio_set_level(BUZZER, 0);
+        vTaskDelay( 100 / portTICK_PERIOD_MS );
+        gpio_set_level(BUZZER, 1);
 
         NVSDriverOpen("nvs");
         NVSDriverWrite("WP", body);

@@ -34,19 +34,10 @@ void thersh_task(void *arg){
 
         if(param.P1>param.T1){
             param.T1F=1;
-            for(int i=0;i<5;i++){
-                led[1].red=255;
-                led[1].blue=0;
-                led[1].green=255;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-
-                led[1].red=0;
-                led[1].blue=0;
-                led[1].green=0;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-            }
+            led[1].red=255;
+            led[1].blue=0;
+            led[1].green=255;
+            ws2812_update(led);
         }else{
             param.T1F=0;
             if(device.dev1_state){
@@ -63,19 +54,10 @@ void thersh_task(void *arg){
         }
         if(param.P2>param.T2){
             param.T2F=1;
-            for(int i=0;i<5;i++){
-                led[2].red=255;
-                led[2].blue=0;
-                led[2].green=255;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-
-                led[2].red=0;
-                led[2].blue=0;
-                led[2].green=0;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-            }
+            led[2].red=255;
+            led[2].blue=0;
+            led[2].green=255;
+            ws2812_update(led);
         }else{
             param.T2F=0;
             if(device.dev2_state){
@@ -92,19 +74,10 @@ void thersh_task(void *arg){
         }
         if(param.P3>param.T3){
             param.T3F=1;
-            for(int i=0;i<5;i++){
-                led[3].red=255;
-                led[3].blue=0;
-                led[3].green=255;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-
-                led[3].red=0;
-                led[3].blue=0;
-                led[3].green=0;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-            }
+            led[3].red=255;
+            led[3].blue=0;
+            led[3].green=255;
+            ws2812_update(led);
         }else{
             param.T3F=0;
             if(device.dev3_state){
@@ -121,19 +94,10 @@ void thersh_task(void *arg){
         }
         if(param.P4>param.T4){
             param.T4F=1;
-            for(int i=0;i<5;i++){
-                led[4].red=255;
-                led[4].blue=0;
-                led[4].green=255;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-
-                led[4].red=0;
-                led[4].blue=0;
-                led[4].green=0;
-                ws2812_update(led);
-                vTaskDelay( 200/ portTICK_PERIOD_MS );
-            }
+            led[4].red=255;
+            led[4].blue=0;
+            led[4].green=255;
+            ws2812_update(led);
         }else{
             param.T4F=0;
             if(device.dev4_state){
@@ -415,6 +379,7 @@ extern "C"  void app_main(){
 
         //Set wifi icon on the screen
         sendData(TX_TASK_TAG, "page 0\xFF\xFF\xFF");
+        sendData(TX_TASK_TAG, "Monitor.wifi.pic=10\xFF\xFF\xFF");
         //Set led to green
         led[0].red=0;
         led[0].blue=0;
@@ -441,7 +406,7 @@ extern "C"  void app_main(){
 
     sendData(TX_TASK_TAG, "page 1\xFF\xFF\xFF");
     vTaskDelay(5 / portTICK_PERIOD_MS);
-    sendData(TX_TASK_TAG, "Monitor.wifi.pic=10\xFF\xFF\xFF");
+
     sendData(TX_TASK_TAG, "ProgressReset.j0.val=0\xFF\xFF\xFF");
     vTaskDelay(5 / portTICK_PERIOD_MS);
     

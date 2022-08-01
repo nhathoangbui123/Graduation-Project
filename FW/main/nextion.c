@@ -210,7 +210,7 @@ void tx_task(void* arg)
       sendData(TX_TASK_TAG, "Control.bt4.val=0\xFF\xFF\xFF");
       gpio_set_level(DEVICE_4, OFF);
     }
-    vTaskDelay(10000 / portTICK_PERIOD_MS); //Transmit every 10 seconds
+    vTaskDelay(1000 / portTICK_PERIOD_MS); //Transmit every 10 seconds
 
   }
 }
