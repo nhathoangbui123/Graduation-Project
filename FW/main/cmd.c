@@ -59,11 +59,11 @@ int GetCmd(char *text)
 }
 int ParseCmd(char *text, char* body)
 {
-  ESP_LOGI("CMD_HMI","body: %s", body);
+  ESP_LOGD("CMD_HMI","body: %s", body);
 	int cmd_index = GetCmd(text);
     switch (cmd_index) {
       case D1ON:
-        ESP_LOGI("CMD_HMI","D1ON");
+        ESP_LOGD("CMD_HMI","D1ON");
         gpio_set_level(DEVICE_1, ON);
 
         led[1].red=0;
@@ -84,7 +84,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D1OFF:
-        ESP_LOGI("CMD_HMI","D1OFF");
+        ESP_LOGD("CMD_HMI","D1OFF");
         gpio_set_level(DEVICE_1, OFF);
 
         led[1].red=255;
@@ -105,7 +105,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D2ON:
-        ESP_LOGI("CMD_HMI","D2ON");
+        ESP_LOGD("CMD_HMI","D2ON");
         gpio_set_level(DEVICE_2, ON);
 
         led[2].red=0;
@@ -126,7 +126,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D2OFF:
-        ESP_LOGI("CMD_HMI","D2OFF");
+        ESP_LOGD("CMD_HMI","D2OFF");
         gpio_set_level(DEVICE_2, OFF);
 
         led[2].red=255;
@@ -146,7 +146,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D3ON:
-        ESP_LOGI("CMD_HMI","D3ON");
+        ESP_LOGD("CMD_HMI","D3ON");
         gpio_set_level(DEVICE_3, ON);
 
         led[3].red=0;
@@ -167,7 +167,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D3OFF:
-        ESP_LOGI("CMD_HMI","D3OFF");
+        ESP_LOGD("CMD_HMI","D3OFF");
         gpio_set_level(DEVICE_3, OFF);
 
         led[3].red=255;
@@ -188,7 +188,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D4ON:
-        ESP_LOGI("CMD_HMI","D4ON");
+        ESP_LOGD("CMD_HMI","D4ON");
         gpio_set_level(DEVICE_4, ON);
 
         led[4].red=0;
@@ -209,7 +209,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case D4OFF:
-        ESP_LOGI("CMD_HMI","D4OFF");
+        ESP_LOGD("CMD_HMI","D4OFF");
         gpio_set_level(DEVICE_4, OFF);
 
         led[4].red=255;
@@ -230,7 +230,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case ALL_ON:
-        ESP_LOGI("CMD_HMI","ALL_ON");
+        ESP_LOGD("CMD_HMI","ALL_ON");
         gpio_set_level(DEVICE_1, ON);
         gpio_set_level(DEVICE_2, ON);
         gpio_set_level(DEVICE_3, ON);
@@ -272,7 +272,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case ALL_OFF:
-        ESP_LOGI("CMD_HMI","ALL_OFF");
+        ESP_LOGD("CMD_HMI","ALL_OFF");
         gpio_set_level(DEVICE_1, OFF);
         gpio_set_level(DEVICE_2, OFF);
         gpio_set_level(DEVICE_3, OFF);
@@ -314,7 +314,7 @@ int ParseCmd(char *text, char* body)
         return 0;
       break;
       case T1:
-        ESP_LOGI("CMD_HMI","T1");
+        ESP_LOGD("CMD_HMI","T1");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -327,7 +327,7 @@ int ParseCmd(char *text, char* body)
         param.T1=atoi(body);
       break;
       case T2:
-        ESP_LOGI("CMD_HMI","T2");
+        ESP_LOGD("CMD_HMI","T2");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -340,7 +340,7 @@ int ParseCmd(char *text, char* body)
         param.T2=atoi(body);
       break;
       case T3:
-        ESP_LOGI("CMD_HMI","T3");
+        ESP_LOGD("CMD_HMI","T3");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -353,7 +353,7 @@ int ParseCmd(char *text, char* body)
         param.T3=atoi(body);
       break;
       case T4:
-        ESP_LOGI("CMD_HMI","T4");
+        ESP_LOGD("CMD_HMI","T4");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -366,7 +366,7 @@ int ParseCmd(char *text, char* body)
         param.T4=atoi(body);
       break;
       case EP:
-        ESP_LOGI("CMD_HMI","EP");
+        ESP_LOGD("CMD_HMI","EP");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -379,7 +379,7 @@ int ParseCmd(char *text, char* body)
         param.EP=atoi(body);
       break;
       case WN:
-        ESP_LOGI("CMD_HMI","WN");
+        ESP_LOGD("CMD_HMI","WN");
 
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -392,7 +392,7 @@ int ParseCmd(char *text, char* body)
         param.WN=strdup(body);
       break;
       case WP:
-        ESP_LOGI("CMD_HMI","WP");
+        ESP_LOGD("CMD_HMI","WP");
         
         gpio_set_level(BUZZER, 0);
         vTaskDelay( 100 / portTICK_PERIOD_MS );
@@ -405,19 +405,19 @@ int ParseCmd(char *text, char* body)
         param.WP=strdup(body);
       break;
       case RST:
-        ESP_LOGI("CMD_HMI","RST");
-        ESP_LOGI("CMD_HMI","ESP32 Will restart");
+        ESP_LOGD("CMD_HMI","RST");
+        ESP_LOGD("CMD_HMI","ESP32 Will restart");
         char *cmd = (char*)malloc(256);
         for(int i=0;i<=100;i++){
           sprintf(cmd, "ProgressReset.j0.val=%d\xFF\xFF\xFF",i);
-          //ESP_LOGI(TX_TASK_TAG, "Monitor_Dev1.thr_dev1.txt=%dkWh", param.T1);
+          //ESP_LOGD(TX_TASK_TAG, "Monitor_Dev1.thr_dev1.txt=%dkWh", param.T1);
           sendData("CMD_HMI", cmd);
           vTaskDelay(10/ portTICK_PERIOD_MS);
         }
         esp_restart();
       break;
       case UNKNOWN_CMD:
-        ESP_LOGI("CMD_HMI","UART RX: cmd UNKNOWN_CMD");
+        ESP_LOGD("CMD_HMI","UART RX: cmd UNKNOWN_CMD");
       return 1;
       break;
 	}

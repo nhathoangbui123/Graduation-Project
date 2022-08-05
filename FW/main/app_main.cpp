@@ -19,12 +19,14 @@
 #include "NVSDriver.h"
 #include "wifi.h"
 
+#define NUM_PZEMS 4
+
 static const char *TAG = "MAIN";
 
 static const int RX_BUF_SIZE = 1024;
 void thersh_task(void *arg){
     while (1) {
-        if(param.P1>param.T1||param.P2>param.T2||param.P3>param.T3||param.P4>param.T4){
+        if(param.P[0]>param.T1||param.P[1]>param.T2||param.P[2]>param.T3||param.P[3]>param.T4){
             gpio_set_level(BUZZER, 0);
             sendData(TX_TASK_TAG, "page 23\xFF\xFF\xFF");
         }else{
@@ -32,7 +34,7 @@ void thersh_task(void *arg){
             //sendData(TX_TASK_TAG, "page 1\xFF\xFF\xFF");
         }
 
-        if(param.P1>param.T1){
+        if(param.P[0]>param.T1){
             param.T1F=1;
             led[1].red=255;
             led[1].blue=0;
@@ -52,7 +54,7 @@ void thersh_task(void *arg){
                 ws2812_update(led);
             }
         }
-        if(param.P2>param.T2){
+        if(param.P[1]>param.T2){
             param.T2F=1;
             led[2].red=255;
             led[2].blue=0;
@@ -72,7 +74,7 @@ void thersh_task(void *arg){
                 ws2812_update(led);
             }
         }
-        if(param.P3>param.T3){
+        if(param.P[2]>param.T3){
             param.T3F=1;
             led[3].red=255;
             led[3].blue=0;
@@ -92,7 +94,7 @@ void thersh_task(void *arg){
                 ws2812_update(led);
             }
         }
-        if(param.P4>param.T4){
+        if(param.P[3]>param.T4){
             param.T4F=1;
             led[4].red=255;
             led[4].blue=0;
@@ -134,14 +136,16 @@ void pzem_task(void *arg){
 	ESP_ERROR_CHECK(uart_param_config(uart_data.uart_port, &uart_config));
 	ESP_ERROR_CHECK(uart_set_pin(uart_data.uart_port, uart_data.tx_io_num, uart_data.rx_io_num, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
-    pzem pzemobj[4];
-    pzemobj[0]=pzem(0x42);
-    
-    pzemobj[1]=pzem(0x43);
+    pzem pzemobj[NUM_PZEMS];
 
-    pzemobj[2]=pzem(0x44);
+    for(int i=0; i<NUM_PZEMS; i++){
+        pzemobj[i]=pzem(0x42+i);
+    }
+    // pzemobj[1]=pzem(0x43);
 
-    pzemobj[3]=pzem(0x45);
+    // pzemobj[2]=pzem(0x44);
+
+    // pzemobj[3]=pzem(0x45);
 
     while (1) {
         ESP_LOGI("TAG_PZEM004T", "[APP] Free memory: %d bytes", esp_get_free_heap_size());
@@ -149,40 +153,46 @@ void pzem_task(void *arg){
         // ESP_LOGI("TAG_PZEM004T", "Address pzem[1] %#.2x", pzemobj[1].getAddress());
         // ESP_LOGI("TAG_PZEM004T", "Address pzem[2] %#.2x", pzemobj[2].getAddress());
         // ESP_LOGI("TAG_PZEM004T", "Address pzem[3] %#.2x", pzemobj[3].getAddress());
+        for(int i=0; i<NUM_PZEMS; i++){
+            param.U[i]=pzemobj[i].voltage();
+            param.I[i]=pzemobj[i].current();
+            param.P[i]=pzemobj[i].power();
+            param.E[i]=pzemobj[i].energy();
+            param.F[i]=pzemobj[i].frequency();
 
-        param.U1=pzemobj[0].voltage();
-        param.I1=pzemobj[0].current();
-        param.P1=pzemobj[0].power();
-        param.E1=pzemobj[0].energy();
-        param.F1=pzemobj[0].frequency();
-        vTaskDelay( 1000 / portTICK_PERIOD_MS );
-
-        param.U2=pzemobj[1].voltage();
-        param.I2=pzemobj[1].current();
-        param.P2=pzemobj[1].power();
-        param.E2=pzemobj[1].energy();
-        param.F2=pzemobj[1].frequency();
-        vTaskDelay( 1000 / portTICK_PERIOD_MS );
-
-        param.U3=pzemobj[2].voltage();
-        param.I3=pzemobj[2].current();
-        param.P3=pzemobj[2].power();
-        param.E3=pzemobj[2].energy();
-        param.F3=pzemobj[2].frequency();
-        vTaskDelay( 1000 / portTICK_PERIOD_MS );
-
-        param.U4=pzemobj[3].voltage();
-        param.I4=pzemobj[3].current();
-        param.P4=pzemobj[3].power();
-        param.E4=pzemobj[3].energy();
-        param.F4=pzemobj[3].frequency();
-        vTaskDelay( 1000 / portTICK_PERIOD_MS );
+            ESP_LOGI("TAG_PZEM004T","voltage   dev%d=%f",i,param.U[i]);
+            ESP_LOGI("TAG_PZEM004T","current   dev%d=%f",i,param.I[i]);
+            ESP_LOGI("TAG_PZEM004T","power     dev%d=%f",i,param.P[i]);
+            ESP_LOGI("TAG_PZEM004T","energy    dev%d=%f",i,param.E[i]);
+            ESP_LOGI("TAG_PZEM004T","frequency dev%d=%f",i,param.F[i]);
+            vTaskDelay( 1000 / portTICK_PERIOD_MS );
+        }
+        // param.U2=pzemobj[1].voltage();
+        // param.I2=pzemobj[1].current();
+        // param.P2=pzemobj[1].power();
+        // param.E2=pzemobj[1].energy();
+        // param.F2=pzemobj[1].frequency();
+        // vTaskDelay( 1000 / portTICK_PERIOD_MS );
+// 
+        // param.U3=pzemobj[2].voltage();
+        // param.I3=pzemobj[2].current();
+        // param.P3=pzemobj[2].power();
+        // param.E3=pzemobj[2].energy();
+        // param.F3=pzemobj[2].frequency();
+        // vTaskDelay( 1000 / portTICK_PERIOD_MS );
+// 
+        // param.U4=pzemobj[3].voltage();
+        // param.I4=pzemobj[3].current();
+        // param.P4=pzemobj[3].power();
+        // param.E4=pzemobj[3].energy();
+        // param.F4=pzemobj[3].frequency();
+        // vTaskDelay( 1000 / portTICK_PERIOD_MS );
         
         //total
-        param.current = param.I1+param.I2+param.I3+param.I4;
-        param.voltage = (param.U1+param.U2+param.U3+param.U4)/4;
-        param.frequency = (param.F1+param.F2+param.F3+param.F4)/4;
-        param.energy = (param.E1+param.E2+param.E3+param.E4);
+        param.current = param.I[0]+param.I[1]+param.I[2]+param.I[3];
+        param.voltage = (param.U[0]+param.U[1]+param.U[2]+param.U[3])/4;
+        param.frequency = (param.F[0]+param.F[1]+param.F[2]+param.F[3])/4;
+        param.energy = (param.E[0]+param.E[1]+param.E[2]+param.E[3]);
         param.cost = param.energy*param.EP;
         //power device
         // param.P1=param.voltage*param.I1*(1/sqrt(2));
@@ -190,42 +200,18 @@ void pzem_task(void *arg){
         // param.P3=param.voltage*param.I3*(1/sqrt(2));
         // param.P4=param.voltage*param.I4*(1/sqrt(2));
         //user1
-        param.current1=param.I1+param.I2;
-        param.energy1=param.E1+param.E2;
+        param.current1=param.I[0]+param.I[1];
+        param.energy1=param.E[0]+param.E[1];
         param.cost1=param.energy1*param.EP;
         //user2
-        param.current2=param.I3+param.I4;
-        param.energy2=param.E3+param.E4;
+        param.current2=param.I[2]+param.I[3];
+        param.energy2=param.E[2]+param.E[3];
         param.cost2=param.energy2*param.EP;
         //cost device
-        param.C1=param.E1*param.EP;
-        param.C2=param.E2*param.EP;
-        param.C3=param.E3*param.EP;
-        param.C4=param.E4*param.EP;
-
-        ESP_LOGI("TAG_PZEM004T","voltage   dev1=%f",param.U1);
-        ESP_LOGI("TAG_PZEM004T","current   dev1=%f",param.I1);
-        ESP_LOGI("TAG_PZEM004T","power     dev1=%f",param.P1);
-        ESP_LOGI("TAG_PZEM004T","energy    dev1=%f",param.E1);
-        ESP_LOGI("TAG_PZEM004T","frequency dev1=%f",param.F1);
-
-        ESP_LOGI("TAG_PZEM004T","voltage   dev2=%f",param.U2);
-        ESP_LOGI("TAG_PZEM004T","current   dev2=%f",param.I2);
-        ESP_LOGI("TAG_PZEM004T","power     dev2=%f",param.P2);
-        ESP_LOGI("TAG_PZEM004T","energy    dev2=%f",param.E2);
-        ESP_LOGI("TAG_PZEM004T","frequency dev2=%f",param.F2);
-
-        ESP_LOGI("TAG_PZEM004T","voltage   dev3=%f",param.U3);
-        ESP_LOGI("TAG_PZEM004T","current   dev3=%f",param.I3);
-        ESP_LOGI("TAG_PZEM004T","power     dev3=%f",param.P3);
-        ESP_LOGI("TAG_PZEM004T","energy    dev3=%f",param.E3);
-        ESP_LOGI("TAG_PZEM004T","frequency dev3=%f",param.F3);
-
-        ESP_LOGI("TAG_PZEM004T","voltage   dev4=%f",param.U4);
-        ESP_LOGI("TAG_PZEM004T","current   dev4=%f",param.I4);
-        ESP_LOGI("TAG_PZEM004T","power     dev4=%f",param.P4);
-        ESP_LOGI("TAG_PZEM004T","energy    dev4=%f",param.E4);
-        ESP_LOGI("TAG_PZEM004T","frequency dev4=%f",param.F4);
+        param.C1=param.E[0]*param.EP;
+        param.C2=param.E[1]*param.EP;
+        param.C3=param.E[2]*param.EP;
+        param.C4=param.E[3]*param.EP;
 
         vTaskDelay( 6000 / portTICK_PERIOD_MS );
 	}

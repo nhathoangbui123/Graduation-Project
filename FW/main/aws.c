@@ -25,8 +25,8 @@ uint32_t port = 8883;
 
 void iot_subscribe_callback_handler(AWS_IoT_Client *pClient, char *topicName, uint16_t topicNameLen,
                                             IoT_Publish_Message_Params *params, void *pData){
-    ESP_LOGI(TAG, "Subscribe callback");
-    ESP_LOGI(TAG, "%.*s\t%.*s", topicNameLen, topicName, (int) params->payloadLen, (char *)params->payload);
+    ESP_LOGD(TAG, "Subscribe callback");
+    ESP_LOGD(TAG, "%.*s\t%.*s", topicNameLen, topicName, (int) params->payloadLen, (char *)params->payload);
     cJSON *sub;
     sub=cJSON_Parse((char *)params->payload);
 
@@ -34,14 +34,14 @@ void iot_subscribe_callback_handler(AWS_IoT_Client *pClient, char *topicName, ui
     char *value_body;
     if(body){
         value_body=cJSON_GetObjectItem(sub,"body")->valuestring;
-        ESP_LOGI(TAG, "body is %s",value_body);
+        ESP_LOGD(TAG, "body is %s",value_body);
     }else{
         value_body="";
     }
     cJSON *command =cJSON_GetObjectItem(sub,"command");
     if(command){
         char *value_type_cmd =cJSON_GetObjectItem(sub,"command")->valuestring;
-        ESP_LOGI(TAG, "command is %s",value_type_cmd);
+        ESP_LOGD(TAG, "command is %s",value_type_cmd);
         ParseCmd(value_type_cmd, value_body);
     }
     cJSON_Delete(sub);
@@ -55,7 +55,7 @@ void disconnectCallbackHandler(AWS_IoT_Client *pClient, void *data){
     }
 
     if(aws_iot_is_autoreconnect_enabled(pClient)) {
-        ESP_LOGI(TAG, "Auto Reconnect is enabled, Reconnecting attempt will start now");
+        ESP_LOGD(TAG, "Auto Reconnect is enabled, Reconnecting attempt will start now");
     } else {
         ESP_LOGW(TAG, "Auto Reconnect not enabled. Starting manual reconnect...");
         rc = aws_iot_mqtt_attempt_reconnect(pClient);
@@ -76,7 +76,7 @@ void aws_iot_task(void *arg){
 
     IoT_Publish_Message_Params paramsQOS0;
 
-    ESP_LOGI(TAG, "AWS IoT SDK Version %d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TAG);
+    ESP_LOGD(TAG, "AWS IoT SDK Version %d.%d.%d-%s", VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH, VERSION_TAG);
 
     mqttInitParams.enableAutoReconnect = false; // We enable this later below
     mqttInitParams.pHostURL = Stag_Endpoint;
@@ -106,7 +106,7 @@ void aws_iot_task(void *arg){
     connectParams.clientIDLen = (uint16_t) strlen(Client_ID);
     connectParams.isWillMsgPresent = false;
 
-    ESP_LOGI(TAG, "Connecting to AWS...");
+    ESP_LOGD(TAG, "Connecting to AWS...");
     
     do {
         rc = aws_iot_mqtt_connect(&client, &connectParams);
@@ -116,7 +116,7 @@ void aws_iot_task(void *arg){
         }
     } while(SUCCESS != rc);
 
-    ESP_LOGI(TAG, "Connected to AWS!");
+    ESP_LOGD(TAG, "Connected to AWS!");
     rc = aws_iot_mqtt_autoreconnect_set_status(&client, true);
     if(SUCCESS != rc) {
         ESP_LOGE(TAG, "Unable to set Auto Reconnect to true - %d", rc);
@@ -128,7 +128,7 @@ void aws_iot_task(void *arg){
     const char *TOPIC_SUB = Topic_Sub;
     const int TOPIC_SUB_LEN = strlen(TOPIC_SUB);
     
-    ESP_LOGI(TAG, "Subscribing...");
+    ESP_LOGD(TAG, "Subscribing...");
     rc = aws_iot_mqtt_subscribe(&client, TOPIC_SUB, TOPIC_SUB_LEN, QOS0, iot_subscribe_callback_handler, NULL);
     if(SUCCESS != rc) {
         ESP_LOGE(TAG, "Error subscribing : %d ", rc);
@@ -142,8 +142,8 @@ void aws_iot_task(void *arg){
             // If the client is attempting to reconnect we will skip the rest of the loop.
             continue;
         }
-        ESP_LOGI(TAG, "Stack remaining for task '%s' is %d bytes", pcTaskGetTaskName(NULL), uxTaskGetStackHighWaterMark(NULL));
-        ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
+        ESP_LOGD(TAG, "Stack remaining for task '%s' is %d bytes", pcTaskGetTaskName(NULL), uxTaskGetStackHighWaterMark(NULL));
+        ESP_LOGD(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
         cJSON *pub;
         char *data_json;
         int length_data_json;
@@ -175,22 +175,22 @@ void aws_iot_task(void *arg){
         cJSON_AddNumberToObject(pub, "C4",param.C4);
 
         //Device current
-        cJSON_AddNumberToObject(pub, "I1",param.I1);
-        cJSON_AddNumberToObject(pub, "I2",param.I2);
-        cJSON_AddNumberToObject(pub, "I3",param.I3);
-        cJSON_AddNumberToObject(pub, "I4",param.I4);
+        cJSON_AddNumberToObject(pub, "I1",param.I[0]);
+        cJSON_AddNumberToObject(pub, "I2",param.I[1]);
+        cJSON_AddNumberToObject(pub, "I3",param.I[2]);
+        cJSON_AddNumberToObject(pub, "I4",param.I[3]);
 
         //Device Energy
-        cJSON_AddNumberToObject(pub, "E1",param.E1);
-        cJSON_AddNumberToObject(pub, "E2",param.E2);
-        cJSON_AddNumberToObject(pub, "E3",param.E3);
-        cJSON_AddNumberToObject(pub, "E4",param.E4);
+        cJSON_AddNumberToObject(pub, "E1",param.E[0]);
+        cJSON_AddNumberToObject(pub, "E2",param.E[1]);
+        cJSON_AddNumberToObject(pub, "E3",param.E[2]);
+        cJSON_AddNumberToObject(pub, "E4",param.E[3]);
 
         //Device power
-        cJSON_AddNumberToObject(pub, "P1",param.P1);
-        cJSON_AddNumberToObject(pub, "P2",param.P2);
-        cJSON_AddNumberToObject(pub, "P3",param.P3);
-        cJSON_AddNumberToObject(pub, "P4",param.P4);
+        cJSON_AddNumberToObject(pub, "P1",param.P[0]);
+        cJSON_AddNumberToObject(pub, "P2",param.P[1]);
+        cJSON_AddNumberToObject(pub, "P3",param.P[2]);
+        cJSON_AddNumberToObject(pub, "P4",param.P[3]);
 
         //Device threshold
         cJSON_AddNumberToObject(pub, "T1",param.T1);
@@ -218,8 +218,8 @@ void aws_iot_task(void *arg){
         memset(&data_json,0,sizeof(data_json));
         data_json = cJSON_Print(pub);
         length_data_json=strlen(data_json);
-        ESP_LOGI(TAG, "data serialized %s", data_json);
-        ESP_LOGI(TAG, "strlen(data) %d", length_data_json);
+        ESP_LOGD(TAG, "data serialized %s", data_json);
+        ESP_LOGD(TAG, "strlen(data) %d", length_data_json);
         paramsQOS0.qos = QOS0;
         paramsQOS0.isRetained = 0;
         paramsQOS0.payload =data_json;

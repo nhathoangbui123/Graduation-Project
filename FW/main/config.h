@@ -50,39 +50,39 @@ typedef struct {
     float energy2;
     float cost2;
 
-    //device1
-    float U1;
-    float I1;
-    float E1;
-    float P1;
-    float F1;
+    //device
+    float U[4];
+    float I[4];
+    float E[4];
+    float P[4];
+    float F[4];
     float C1;
     int T1;
     int T1F;
     //device2
-    float U2;
-    float I2;
-    float E2;
-    float P2;
-    float F2;
+    // float U2;
+    // float I2;
+    // float E2;
+    // float P2;
+    // float F2;
     float C2;
     int T2;
     int T2F;
     //device3
-    float U3;
-    float I3;
-    float E3;
-    float P3;
-    float F3;
+    // float U3;
+    // float I3;
+    // float E3;
+    // float P3;
+    // float F3;
     float C3;
     int T3;
     int T3F;
     //device4
-    float U4;
-    float I4;
-    float E4;
-    float P4;
-    float F4;
+    // float U4;
+    // float I4;
+    // float E4;
+    // float P4;
+    // float F4;
     float C4;
     int T4;
     int T4F;
